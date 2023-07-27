@@ -1,6 +1,5 @@
 package com.lib.eyes.ggads
 
-import android.app.Activity
 import android.content.Context
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
@@ -8,13 +7,16 @@ import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.lib.eyes.Param.AdmobInterstitial.IAdmobInterstitial
+import com.lib.eyes.ShowParam
 import com.lib.eyes.wireframe.Holder
-import com.lib.eyes.wireframe.InterstitialInterface
+import com.lib.eyes.wireframe.ISeparateShow
 import com.lib.eyes.wireframe.LoadCallback
+import com.lib.eyes.wireframe.SeparateShow
 import com.lib.eyes.wireframe.ShowCallback
 import com.lib.eyes.wireframe.SingleHolder
 
-internal class AdmobInterstitial : InterstitialInterface, SingleHolder<InterstitialAd> by Holder() {
+internal class AdmobInterstitialDelegate: IAdmobInterstitial, SingleHolder<InterstitialAd> by Holder() {
     private var isShowing = false
     private var isLoading = false
     private var callback: ShowCallback? = null
@@ -22,23 +24,23 @@ internal class AdmobInterstitial : InterstitialInterface, SingleHolder<Interstit
         AdmobInterstitialCallback()
     }
 
-    override fun load(context: Context, interId: String, loadCallback: LoadCallback?): InterstitialInterface {
-        if(isAvailable() || isLoading) return this
+    override fun load(context: Context, interId: String, loadCallback: LoadCallback?): IAdmobInterstitial {
+        if (isAvailable() || isLoading) return this
 
         isLoading = true
         val adRequest = AdRequest.Builder().build()
 
         InterstitialAd.load(context, interId, adRequest, object : InterstitialAdLoadCallback() {
             override fun onAdFailedToLoad(adError: LoadAdError) {
-                this@AdmobInterstitial.release()
-                this@AdmobInterstitial.isLoading = false
+                this@AdmobInterstitialDelegate.release()
+                this@AdmobInterstitialDelegate.isLoading = false
                 loadCallback?.loadFailed()
             }
 
             override fun onAdLoaded(interstitialAd: InterstitialAd) {
                 interstitialAd.fullScreenContentCallback = fullScreenContentCallback
-                this@AdmobInterstitial.hold(interstitialAd)
-                this@AdmobInterstitial.isLoading = false
+                this@AdmobInterstitialDelegate.hold(interstitialAd)
+                this@AdmobInterstitialDelegate.isLoading = false
                 loadCallback?.loadSuccess()
             }
         })
@@ -46,8 +48,11 @@ internal class AdmobInterstitial : InterstitialInterface, SingleHolder<Interstit
         return this
     }
 
-    override fun show(activity: Activity?, callback: ShowCallback?) {
-        if(isShowing || !isAvailable() || activity == null) {
+    override fun show(param: ShowParam.SPAdmobInterstitial) {
+        val (activity, callback) = param
+
+        if (isShowing || !isAvailable() || activity == null) {
+            callback?.onFailed()
             return
         }
 
@@ -64,17 +69,27 @@ internal class AdmobInterstitial : InterstitialInterface, SingleHolder<Interstit
         override fun onAdFailedToShowFullScreenContent(adError: AdError) {
             isShowing = false
             callback?.onFailed()
+            clearAds()
         }
 
         override fun onAdDismissedFullScreenContent() {
             isShowing = false
             callback?.onClosed()
+            clearAds()
         }
 
         override fun onAdShowedFullScreenContent() {
-            super.onAdShowedFullScreenContent()
             isShowing = true
             callback?.onSuccess()
         }
+
+        override fun onAdClicked() {
+            callback?.onClicked()
+        }
     }
 }
+
+class AdmobInterstitial(
+    ads: IAdmobInterstitial = AdmobInterstitialDelegate()
+) : IAdmobInterstitial by ads,
+    ISeparateShow<ShowParam.SPAdmobInterstitial> by SeparateShow(ads)

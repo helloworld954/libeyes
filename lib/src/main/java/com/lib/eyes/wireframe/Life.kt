@@ -1,12 +1,11 @@
 package com.lib.eyes.wireframe
 
-import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 
 internal class Life(
     lifecycleOwner: LifecycleOwner? = null,
-    private val ads: AdsInterface
+    private val ads: AdsInterface<*>
 ) : DefaultLifecycleObserver {
     init {
         lifecycleOwner?.lifecycle?.addObserver(this)

@@ -1,17 +1,19 @@
 package com.lib.eyes.wireframe
 
-import android.app.Activity
+import com.lib.eyes.ShowParam
 
-interface AdsInterface {
-    fun show(activity: Activity? = null, callback: ShowCallback? = null)
+interface AdsInterface<T: ShowParam> {
+    fun show(param: T)
 
-    fun clearAds()
+    fun clearAds() {}
 }
 
 interface ShowCallback {
     fun onSuccess()
 
     fun onClosed() {}
+
+    fun onClicked() {}
 
     fun onFailed()
 }

@@ -31,11 +31,26 @@
 
             android:text="Inter" />
 
+        <Button
+            android:id="@+id/btn_banner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="Banner" />
+
     </LinearLayout>
 
-    <com.google.android.ads.nativetemplates.TemplateView
+    <com.lib.eyes.templates.TemplateView
         android:id="@+id/my_template"
         app:gnt_template_type="@layout/gnt_small_template_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintBottom_toTopOf="@id/banner_template"/>
+
+    <com.lib.eyes.templates.BannerView
+        android:id="@+id/banner_template"
+        app:gnt_banner_size="inline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 

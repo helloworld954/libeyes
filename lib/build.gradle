@@ -4,6 +4,7 @@ plugins {
 }
 
 def adsProperties = new Properties()
+def config = new Properties()
 
 class Globals {
     static String id_app = 'ca-app-pub-3940256099942544~3347511713'
@@ -22,8 +23,6 @@ android {
     defaultConfig {
         minSdk 21
         targetSdk 33
-
-        manifestPlaceholders.testAppID = "ca-app-pub-3940256099942544~3347511713"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -58,11 +57,18 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    buildFeatures {
+        viewBinding true
+    }
+
+//    lintOptions {
+//        resourcePrefix 'le_'
+//    }
 }
 
 gradle.afterProject { project ->
-    project.task(dependsOn: createIfPossible) {
-        println("Create done ")
+    project.task(dependsOn: loadConfig) {
+
     }
 }
 
@@ -89,17 +95,8 @@ task createIfPossible {
         assert propsFile.createNewFile()
 
         Properties properties = new Properties();
-        properties.setProperty("native.test.id", Globals.id_native_test)
-        properties.setProperty("banner.test.id", Globals.id_banner_test)
-        properties.setProperty("inter.test.id", Globals.id_inter_test)
-        properties.setProperty("reward.test.id", Globals.id_reward_test)
 
         propsFile.withWriterAppend { writer ->
-            writer.writeLine("# DO NOT MODIFY")
-            properties.forEach { key, value ->
-                writer.writeLine("$key=$value")
-            }
-            writer.writeLine("# ----------------")
             writer.writeLine("$key_APPID=${Globals.id_app}")
         }
 
@@ -112,9 +109,35 @@ task createIfPossible {
     }
 }
 
-dependencies {
-    api project(":nativetemplates")
+task loadConfig {
+    dependsOn(createIfPossible)
 
+    File propsFile = new File(rootDir, "config.properties")
+    if (!propsFile.exists()) {
+        assert propsFile.createNewFile()
+
+        Properties properties = new Properties();
+        properties.setProperty("firebase_analytics", "false")
+//        properties.setProperty(Globals.fc, false)
+//        properties.setProperty(Globals.fcm, false)
+//        properties.setProperty(Globals.frc, false)
+
+        propsFile.withWriterAppend { writer ->
+            properties.forEach { key, value ->
+                writer.writeLine("$key=$value")
+            }
+        }
+
+        properties.clear()
+    }
+
+    config.clear()
+    propsFile.withInputStream {
+        config.load(it)
+    }
+}
+
+dependencies {
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
@@ -122,6 +145,18 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
+    //google
+    implementation 'com.google.errorprone:error_prone_annotations:2.16'
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"
+    implementation "androidx.lifecycle:lifecycle-service:2.5.1"
+
     //ads
     api 'com.google.android.gms:play-services-ads:22.2.0'
+
+    //shimmer
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+
+    //firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.2.0"))
+    implementation("com.google.firebase:firebase-analytics-ktx")
 }
