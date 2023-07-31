@@ -7,14 +7,18 @@ import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
 import com.lib.eyes.ShowParam
 import com.lib.eyes.wireframe.AdsInterface
-import com.lib.eyes.wireframe.Holder
-import com.lib.eyes.wireframe.SingleHolder
+import com.lib.eyes.wireframe.BaseAds
+import com.lib.eyes.wireframe.LoadCallback
 
-typealias IAdmobBanner = AdsInterface<ShowParam.SPAdmobBanner>
+interface IAdmobBanner : AdsInterface<ShowParam.SPAdmobBanner>
 
-internal class AdmobBannerDelegate: IAdmobBanner, SingleHolder<AdView> by Holder() {
+internal class AdmobBannerDelegate:
+    BaseAds<AdView, ShowParam.SPAdmobBanner>(), IAdmobBanner
+{
     override fun show(param: ShowParam.SPAdmobBanner) {
         val (container, adId, callback, loadCallback) = param
+
+        this.loadCallback = loadCallback
 
         val adRequest = AdRequest.Builder().build()
         val adView = AdView(container.context)
@@ -27,13 +31,13 @@ internal class AdmobBannerDelegate: IAdmobBanner, SingleHolder<AdView> by Holder
             }
 
             override fun onAdFailedToLoad(adError : LoadAdError) {
-                loadCallback?.loadFailed()
+                loadFailed()
                 callback?.onFailed()
             }
 
             override fun onAdLoaded() {
                 callback?.onSuccess()
-                loadCallback?.loadSuccess()
+                loadSuccess()
 
                 hold(adView)
                 container.setAdView(adView)
@@ -49,8 +53,10 @@ internal class AdmobBannerDelegate: IAdmobBanner, SingleHolder<AdView> by Holder
     override fun clearAds() {
         release()
     }
+
+    override fun initSelf(): AdsInterface<ShowParam.SPAdmobBanner> = this
 }
 
-class AdmobBanner(
-    ads: IAdmobBanner = AdmobBannerDelegate()
+class AdmobBanner internal constructor(
+    ads: AdmobBannerDelegate = AdmobBannerDelegate()
 ) : IAdmobBanner by ads

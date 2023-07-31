@@ -1,14 +1,16 @@
 package com.lib.eyes
 
 import android.content.Context
+import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.ViewTreeLifecycleOwner
+import com.lib.eyes.application.AdmobApplication
 import com.lib.eyes.ggads.AdmobBanner
 import com.lib.eyes.ggads.AdmobInterstitial
 import com.lib.eyes.ggads.AdmobNative
+import com.lib.eyes.ggads.AdmobOpenAppAds
 import com.lib.eyes.wireframe.AdsInterface
 import com.lib.eyes.wireframe.ISeparateShow
 import com.lib.eyes.wireframe.LoadCallback
-import com.lib.eyes.wireframe.SeparateShow
 
 object AdsPool {
     private val pool: HashMap<String, AdsInterface<ShowParam>> = hashMapOf()
@@ -69,12 +71,10 @@ object AdsPool {
                 AdmobInterstitial().let {
                     it.load(context, adId, object: LoadCallback {
                         override fun loadFailed() {
-                            super.loadFailed()
                             sp.showCallback?.onFailed()
                         }
 
                         override fun loadSuccess() {
-                            super.loadSuccess()
                             it.show(sp)
                         }
                     })
@@ -83,7 +83,20 @@ object AdsPool {
             is ShowParam.SPAdmobNative -> {
 
             }
+
+            is ShowParam.SPAdmobOpenApp -> {
+
+            }
         }
+    }
+
+    /**
+     * Only call in Application.onCreate
+     */
+    fun registerOpenAppAd(application: AdmobApplication, adId: String) {
+        val openApp = AdmobOpenAppAds(adId)
+        application.registerActivityLifecycleCallbacks(openApp)
+        ProcessLifecycleOwner.get().lifecycle.addObserver(openApp)
     }
 
     private fun initAdWithParam(param: Param, separateTime: Int? = null): AdsInterface<ShowParam> = when(param) {

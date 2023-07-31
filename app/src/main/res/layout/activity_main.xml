@@ -38,6 +38,13 @@
 
             android:text="Banner" />
 
+        <Button
+            android:id="@+id/btn_inter_immediately"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="Inter now" />
+
     </LinearLayout>
 
     <com.lib.eyes.templates.TemplateView

@@ -4,7 +4,6 @@ interface SingleHolder<T> {
     fun hold(item: T)
     fun release()
     fun peek(): T?
-    fun isAvailable() = peek() != null
 }
 
 class Holder<T>(

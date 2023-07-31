@@ -23,6 +23,6 @@ internal class SeparateShow<T: ShowParam>(
     }
 
     override fun setSeparateTime(time: Int) {
-        this.time = time
+        this.separateTime = time
     }
 }

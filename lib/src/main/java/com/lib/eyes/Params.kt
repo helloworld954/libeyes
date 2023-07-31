@@ -2,12 +2,13 @@ package com.lib.eyes
 
 import android.app.Activity
 import android.content.Context
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewTreeLifecycleOwner
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.lib.eyes.ggads.AdmobOpenApp
 import com.lib.eyes.templates.BannerView
 import com.lib.eyes.templates.TemplateView
 import com.lib.eyes.wireframe.AdsInterface
 import com.lib.eyes.wireframe.LoadCallback
+import com.lib.eyes.wireframe.Self
 import com.lib.eyes.wireframe.ShowCallback
 
 /**
@@ -30,6 +31,12 @@ sealed interface ShowParam {
 
     data class SPAdmobNative(
         override val showCallback: ShowCallback?
+    ): ShowParam
+
+    data class SPAdmobOpenApp(
+        val activity: Activity,
+        val onShowAdCompleteListener: AdmobOpenApp.OnShowAdCompleteListener,
+        override val showCallback: ShowCallback? = null
     ): ShowParam
 }
 

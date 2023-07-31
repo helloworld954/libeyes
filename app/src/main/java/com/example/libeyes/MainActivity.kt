@@ -5,8 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewTreeLifecycleOwner
-import com.google.android.gms.ads.MobileAds
 import com.lib.eyes.AdsPool
 import com.lib.eyes.BuildConfig
 import com.lib.eyes.Param
@@ -36,7 +34,24 @@ class MainActivity : AppCompatActivity() {
     private fun setupView() {
         setContentView(R.layout.activity_main)
 
-        MobileAds.initialize(this)
+        findViewById<Button>(R.id.btn_inter_immediately).setOnClickListener {
+            AdsPool.loadAndShowImmediately(this, BuildConfig.inter_main, ShowParam.SPAdmobInterstitial(
+                this, object : ShowCallback {
+                    override fun onSuccess() {
+                        Log.d("vanh: MainActivity", "onSuccess: ")
+                    }
+
+                    override fun onFailed() {
+                        Log.d("vanh: MainActivity", "onFailed: ")
+                    }
+
+                    override fun onClosed() {
+
+                    }
+                })
+            )
+        }
+
         AdsPool.prepareAd<Param.AdmobNative.IAdmobNative>(
             BuildConfig.native_main, Param.AdmobNative(
                 this,
@@ -77,30 +92,29 @@ class MainActivity : AppCompatActivity() {
             },
             loadCallback = object : LoadCallback {
                 override fun loadSuccess() {
-                    super.loadSuccess()
                     Log.d("vanh: MainActivity", "loadSuccess: ")
                 }
 
                 override fun loadFailed() {
-                    super.loadFailed()
                     Log.d("vanh: MainActivity", "loadFailed: ")
                 }
             }
         ))
 
+        val param = Param.AdmobInterstitial(
+            this.applicationContext, BuildConfig.inter_main, object : LoadCallback {
+                override fun loadSuccess() {
+                    Log.d("vanh: MainActivity", "loadSuccess: ")
+                }
+
+                override fun loadFailed() {
+                    Log.d("vanh: MainActivity", "loadFailed: ")
+                }
+            }
+        )
         AdsPool.prepareAd<Param.AdmobInterstitial.IAdmobInterstitial>(
             adId = BuildConfig.inter_main,
-            param = Param.AdmobInterstitial(
-                this, BuildConfig.inter_main, object : LoadCallback {
-                    override fun loadSuccess() {
-                        Log.d("vanh: MainActivity", "loadSuccess: ")
-                    }
-
-                    override fun loadFailed() {
-                        Log.d("vanh: MainActivity", "loadFailed: ")
-                    }
-                }
-            ),
+            param = param,
             separateTime = 3
         )
 
@@ -115,7 +129,11 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onClosed() {
-                    Log.d("vanh: MainActivity", "onClosed: ")
+                    AdsPool.prepareAd<Param.AdmobInterstitial.IAdmobInterstitial>(
+                        adId = BuildConfig.inter_main,
+                        param = param,
+                        separateTime = 3
+                    )
                 }
             }))
         }
