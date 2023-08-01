@@ -16,6 +16,7 @@ import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.lib.eyes.R
+import java.util.UUID
 
 typealias Inflater<T> = (inflater: LayoutInflater, parent: ViewGroup?, attachToParent: Boolean) -> T
 
@@ -25,7 +26,7 @@ object IndependenceDialog {
         inflater: Inflater<T>,
         inflateAction: (DialogInterface.(T) -> Unit)? = null
     ) {
-        CenterDialog(inflater, inflateAction).show(activity.supportFragmentManager, "kfas")
+        CenterDialog(inflater, inflateAction).show(activity.supportFragmentManager, UUID.randomUUID().toString())
     }
 
     fun <T : ViewBinding> showBottomSheet(
@@ -33,7 +34,7 @@ object IndependenceDialog {
         inflater: Inflater<T>,
         inflateAction: (DialogInterface.(T) -> Unit)? = null
     ) {
-        BottomSheet(inflater, inflateAction).show(activity.supportFragmentManager, "fjdk")
+        BottomSheet(inflater, inflateAction).show(activity.supportFragmentManager, UUID.randomUUID().toString())
     }
 
     fun showAlertDialog(
@@ -112,7 +113,7 @@ class BottomSheet<T : ViewBinding>(
     }
 }
 
-internal class FullWidthAppCompatDialog(context: Context, theme: Int) : AppCompatDialog(context, theme) {
+class FullWidthAppCompatDialog(context: Context, theme: Int) : AppCompatDialog(context, theme) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.window?.setLayout(

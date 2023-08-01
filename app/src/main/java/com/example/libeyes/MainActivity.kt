@@ -5,14 +5,14 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import com.example.wireframe.Param
+import com.example.wireframe.ShowParam
+import com.example.wireframe.wireframe.LoadCallback
+import com.example.wireframe.wireframe.ShowCallback
 import com.lib.eyes.AdsPool
 import com.lib.eyes.BuildConfig
-import com.lib.eyes.Param
-import com.lib.eyes.ShowParam
 import com.lib.eyes.utils.PermissionRequest
 import com.lib.eyes.utils.PermissionRequestState
-import com.lib.eyes.wireframe.LoadCallback
-import com.lib.eyes.wireframe.ShowCallback
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,15 +60,15 @@ class MainActivity : AppCompatActivity() {
             )
         ).show(ShowParam.SPAdmobNative(object : ShowCallback {
             override fun onSuccess() {
-                Log.d("vanh: MainActivity", "onSuccess: ")
+                Log.d("vanh: MainActivity", "onSuccess: AdmobNative")
             }
 
             override fun onFailed() {
-                Log.d("vanh: MainActivity", "onFailed: ")
+                Log.d("vanh: MainActivity", "onFailed: AdmobNative")
             }
         }))
 
-        AdsPool.show(BuildConfig.banner_main, ShowParam.SPAdmobBanner(
+        AdsPool.loadAndShowImmediately(this, BuildConfig.banner_main, ShowParam.SPAdmobBanner(
             findViewById(R.id.banner_template),
             BuildConfig.banner_main,
             showCallback = object : ShowCallback {
@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onFailed() {
-                    Log.d("vanh: MainActivity", "onFailed: ")
+                    Log.d("vanh: MainActivity", "onFailed: SPAdmobBanner")
                 }
 
                 override fun onClicked() {
@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun loadFailed() {
-                    Log.d("vanh: MainActivity", "loadFailed: ")
+                    Log.d("vanh: MainActivity", "loadFailed: SPAdmobBanner")
                 }
             }
         ))
@@ -119,7 +119,8 @@ class MainActivity : AppCompatActivity() {
         )
 
         findViewById<Button>(R.id.btn_inter).setOnClickListener {
-            AdsPool.showSeparate(BuildConfig.inter_main, ShowParam.SPAdmobInterstitial(this@MainActivity, object : ShowCallback {
+            AdsPool.showSeparate(BuildConfig.inter_main, ShowParam.SPAdmobInterstitial(this@MainActivity, object :
+                ShowCallback {
                 override fun onSuccess() {
                     Log.d("vanh: MainActivity", "onSuccess: ")
                 }

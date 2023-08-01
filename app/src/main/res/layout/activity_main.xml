@@ -47,7 +47,7 @@
 
     </LinearLayout>
 
-    <com.lib.eyes.templates.TemplateView
+    <com.libeye.admob.templates.TemplateView
         android:id="@+id/my_template"
         app:gnt_template_type="@layout/gnt_small_template_view"
         android:layout_width="match_parent"
@@ -55,7 +55,7 @@
 
         app:layout_constraintBottom_toTopOf="@id/banner_template"/>
 
-    <com.lib.eyes.templates.BannerView
+    <com.libeye.admob.templates.BannerView
         android:id="@+id/banner_template"
         app:gnt_banner_size="inline"
         android:layout_width="match_parent"

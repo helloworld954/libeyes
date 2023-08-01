@@ -1,0 +1,13 @@
+<resources>
+  <declare-styleable name="TemplateView">
+    <attr name="gnt_template_type" format="reference"/>
+  </declare-styleable>
+
+  <declare-styleable name="BannerView">
+    <!-- Banner type. Anchor by default -->
+    <attr name="gnt_banner_size" format="enum">
+      <enum name="inline" value="0"/>
+      <enum name="anchor" value="1"/>
+    </attr>
+  </declare-styleable>
+</resources>

@@ -141,6 +141,9 @@ task loadConfig {
 }
 
 dependencies {
+    api project(":wireframe")
+    implementation project(":admob")
+
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
@@ -148,20 +151,11 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
-    //google
-    implementation 'com.google.errorprone:error_prone_annotations:2.16'
-
     //lifecycle
     def lifecycle_version = "2.5.1"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-process:$lifecycle_version"
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
-
-    //ads
-    api 'com.google.android.gms:play-services-ads:22.2.0'
-
-    //shimmer
-    implementation 'com.facebook.shimmer:shimmer:0.5.0'
 
     //firebase
     implementation(platform("com.google.firebase:firebase-bom:32.2.0"))
