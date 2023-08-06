@@ -112,14 +112,14 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         )
-        AdsPool.prepareAd<Param.AdmobInterstitial.IAdmobInterstitial>(
-            adId = BuildConfig.inter_main,
-            param = param,
-            separateTime = 3
-        )
+//        AdsPool.prepareAd<Param.AdmobInterstitial.IAdmobInterstitial>(
+//            adId = BuildConfig.inter_main,
+//            param = param,
+//            separateTime = 3
+//        )
 
         findViewById<Button>(R.id.btn_inter).setOnClickListener {
-            AdsPool.showSeparate(BuildConfig.inter_main, ShowParam.SPAdmobInterstitial(this@MainActivity, object :
+            AdsPool.loadAndShowInterstitialImmediately(this, BuildConfig.inter_main, ShowParam.SPAdmobInterstitial(this@MainActivity, object :
                 ShowCallback {
                 override fun onSuccess() {
                     Log.d("vanh: MainActivity", "onSuccess: ")
@@ -130,11 +130,11 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onClosed() {
-                    AdsPool.prepareAd<Param.AdmobInterstitial.IAdmobInterstitial>(
-                        adId = BuildConfig.inter_main,
-                        param = param,
-                        separateTime = 3
-                    )
+//                    AdsPool.prepareAd<Param.AdmobInterstitial.IAdmobInterstitial>(
+//                        adId = BuildConfig.inter_main,
+//                        param = param,
+//                        separateTime = 3
+//                    )
                 }
             }))
         }

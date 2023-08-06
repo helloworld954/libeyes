@@ -6,6 +6,4 @@ import com.libeye.admob.AdmobApplicationDelegate
 
 fun createDelegation(application: Application, listTestDevice: List<String> = listOf()): ApplicationDelegation = AdmobApplicationDelegate(application, listTestDevice)
 
-open class AdmobApplication : Application() {
-
-}
+open class AdmobApplication : Application()

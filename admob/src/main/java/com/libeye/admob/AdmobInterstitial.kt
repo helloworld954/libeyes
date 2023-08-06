@@ -14,6 +14,8 @@ import com.example.wireframe.wireframe.LoadCallback
 import com.example.wireframe.wireframe.SeparateShow
 import com.example.wireframe.wireframe.ShowCallback
 import com.example.wireframe.*
+import com.example.wireframe.wireframe.ITimeout
+import com.example.wireframe.wireframe.Timeout
 
 class AdmobInterstitialDelegate :
     BaseAds<InterstitialAd, ShowParam.SPAdmobInterstitial>(),
@@ -100,6 +102,18 @@ class AdmobInterstitialDelegate :
 }
 
 class AdmobInterstitial constructor(
-    ads: AdmobInterstitialDelegate = AdmobInterstitialDelegate()
+    private val ads: AdmobInterstitialDelegate = AdmobInterstitialDelegate(),
+    timeout: Long? = null
 ) : Param.AdmobInterstitial.IAdmobInterstitial by ads,
-    ISeparateShow<ShowParam.SPAdmobInterstitial> by SeparateShow(ads)
+    ISeparateShow<ShowParam.SPAdmobInterstitial> by SeparateShow(ads),
+    ITimeout by Timeout(ads, timeout)
+{
+    init {
+        ads.self = this
+    }
+
+    override fun show(param: ShowParam.SPAdmobInterstitial) {
+        startTimeout()
+        ads.show(param)
+    }
+}

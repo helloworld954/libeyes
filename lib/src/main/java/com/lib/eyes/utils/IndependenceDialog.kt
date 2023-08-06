@@ -24,17 +24,19 @@ object IndependenceDialog {
     fun <T : ViewBinding> show(
         activity: FragmentActivity,
         inflater: Inflater<T>,
+        cancelable: Boolean = true,
         inflateAction: (DialogInterface.(T) -> Unit)? = null
     ) {
-        CenterDialog(inflater, inflateAction).show(activity.supportFragmentManager, UUID.randomUUID().toString())
+        CenterDialog(inflater, inflateAction, cancelable).show(activity.supportFragmentManager, UUID.randomUUID().toString())
     }
 
     fun <T : ViewBinding> showBottomSheet(
         activity: FragmentActivity,
         inflater: Inflater<T>,
+        cancelable: Boolean = true,
         inflateAction: (DialogInterface.(T) -> Unit)? = null
     ) {
-        BottomSheet(inflater, inflateAction).show(activity.supportFragmentManager, UUID.randomUUID().toString())
+        BottomSheet(inflater, inflateAction, cancelable).show(activity.supportFragmentManager, UUID.randomUUID().toString())
     }
 
     fun showAlertDialog(
@@ -49,7 +51,8 @@ object IndependenceDialog {
         @DrawableRes positiveIcon: Int? = null,
         neutralMessage: String? = null,
         neutralAction: ((DialogInterface, Int) -> Unit)? = null,
-        @DrawableRes neutralIcon: Int? = null
+        @DrawableRes neutralIcon: Int? = null,
+        cancelable: Boolean = true
     ) {
         val alertDialog = AlertDialog.Builder(context).apply {
             setTitle(title)
@@ -69,6 +72,8 @@ object IndependenceDialog {
             neutralIcon?.let {
                 setNeutralButtonIcon(AppCompatResources.getDrawable(context, it))
             }
+
+            setCancelable(cancelable)
         }
 
         alertDialog.show()
@@ -79,7 +84,8 @@ object IndependenceDialog {
 
 class CenterDialog<T : ViewBinding>(
     inflater: Inflater<T>,
-    private val bindAction: (Dialog.(T) -> Unit)? = null
+    private val bindAction: (Dialog.(T) -> Unit)? = null,
+    private val cancelable: Boolean = true
 ) : AppCompatDialogFragment() {
     private val binding: T by lazy {
         inflater.invoke(layoutInflater, null, false)
@@ -87,6 +93,8 @@ class CenterDialog<T : ViewBinding>(
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = FullWidthAppCompatDialog(requireContext(), R.style.TranslucentDialog)
+
+        dialog.setCancelable(cancelable)
 
         dialog.setContentView(binding.root)
         bindAction?.invoke(dialog, binding)
@@ -97,7 +105,8 @@ class CenterDialog<T : ViewBinding>(
 
 class BottomSheet<T : ViewBinding>(
     inflater: Inflater<T>,
-    private val bindAction: (Dialog.(T) -> Unit)? = null
+    private val bindAction: (Dialog.(T) -> Unit)? = null,
+    private val cancelable: Boolean = true
 ) : BottomSheetDialogFragment() {
     private val binding: T by lazy {
         inflater.invoke(layoutInflater, null, false)
@@ -105,6 +114,8 @@ class BottomSheet<T : ViewBinding>(
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = BottomSheetDialog(requireContext(), R.style.TranslucentDialog)
+
+        dialog.setCancelable(cancelable)
 
         dialog.setContentView(binding.root)
         bindAction?.invoke(dialog, binding)
