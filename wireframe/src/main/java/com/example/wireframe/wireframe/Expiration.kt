@@ -19,7 +19,7 @@ class Expiration(
     }
     
     override fun loadSuccess() {
-        this.ad.loadFailed()
+        this.ad.loadCallback?.loadSuccess()
         this.loadTime = Date().time
     }
 

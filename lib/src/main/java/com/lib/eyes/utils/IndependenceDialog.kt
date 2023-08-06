@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDialog
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -26,8 +27,8 @@ object IndependenceDialog {
         inflater: Inflater<T>,
         cancelable: Boolean = true,
         inflateAction: (DialogInterface.(T) -> Unit)? = null
-    ) {
-        CenterDialog(inflater, inflateAction, cancelable).show(activity.supportFragmentManager, UUID.randomUUID().toString())
+    ): DialogFragment = CenterDialog(inflater, inflateAction, cancelable).apply {
+        show(activity.supportFragmentManager, UUID.randomUUID().toString())
     }
 
     fun <T : ViewBinding> showBottomSheet(
@@ -35,8 +36,8 @@ object IndependenceDialog {
         inflater: Inflater<T>,
         cancelable: Boolean = true,
         inflateAction: (DialogInterface.(T) -> Unit)? = null
-    ) {
-        BottomSheet(inflater, inflateAction, cancelable).show(activity.supportFragmentManager, UUID.randomUUID().toString())
+    ): DialogFragment = BottomSheet(inflater, inflateAction, cancelable).apply {
+        show(activity.supportFragmentManager, UUID.randomUUID().toString())
     }
 
     fun showAlertDialog(
@@ -53,7 +54,7 @@ object IndependenceDialog {
         neutralAction: ((DialogInterface, Int) -> Unit)? = null,
         @DrawableRes neutralIcon: Int? = null,
         cancelable: Boolean = true
-    ) {
+    ): AlertDialog.Builder {
         val alertDialog = AlertDialog.Builder(context).apply {
             setTitle(title)
             setMessage(message)
@@ -76,7 +77,9 @@ object IndependenceDialog {
             setCancelable(cancelable)
         }
 
-        alertDialog.show()
+        return alertDialog.apply {
+            show()
+        }
     }
 }
 
@@ -94,7 +97,7 @@ class CenterDialog<T : ViewBinding>(
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = FullWidthAppCompatDialog(requireContext(), R.style.TranslucentDialog)
 
-        dialog.setCancelable(cancelable)
+        this.isCancelable = cancelable
 
         dialog.setContentView(binding.root)
         bindAction?.invoke(dialog, binding)
@@ -115,7 +118,7 @@ class BottomSheet<T : ViewBinding>(
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = BottomSheetDialog(requireContext(), R.style.TranslucentDialog)
 
-        dialog.setCancelable(cancelable)
+        this.isCancelable = cancelable
 
         dialog.setContentView(binding.root)
         bindAction?.invoke(dialog, binding)

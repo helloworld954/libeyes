@@ -4,5 +4,5 @@ object Const {
     /**
      * Seconds
      */
-    const val TIMEOUT: Long = 12
+    const val TIMEOUT: Long = 12000
 }

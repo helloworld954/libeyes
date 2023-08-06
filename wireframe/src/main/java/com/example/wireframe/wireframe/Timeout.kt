@@ -22,7 +22,7 @@ class Timeout(
                     object: TimerTask() {
                         override fun run() {
                             isTimeout = true
-                            ad.loadFailed()
+                            ad.loadCallback?.loadFailed()
                         }
                     },
                     it
@@ -32,8 +32,8 @@ class Timeout(
     }
 
     override fun loadFailed() {
-        if (!isTimeout) {
-            ad.loadFailed()
+         if (!isTimeout) {
+            ad.loadCallback?.loadFailed()
         }
 
         timer?.cancel()
@@ -41,7 +41,7 @@ class Timeout(
 
     override fun loadSuccess() {
         if (!isTimeout) {
-            ad.loadSuccess()
+            ad.loadCallback?.loadSuccess()
         }
 
         timer?.cancel()

@@ -8,7 +8,12 @@ abstract class BaseAds<T, SP: ShowParam>:
     SingleHolder<T> by Holder(),
     Self<AdsInterface<SP>>
 {
-    protected var loadCallback: LoadCallback? = null
+    private var _loadCallback: LoadCallback? = null
+    var loadCallback: LoadCallback?
+        get() = _loadCallback
+        set(value) {
+            _loadCallback = value
+        }
     private var _self: AdsInterface<SP> = initSelf()
 
     override fun loadFailed() {

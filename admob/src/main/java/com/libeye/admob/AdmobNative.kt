@@ -24,7 +24,7 @@ import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.libeye.admob.templates.TemplateView
 
-class AdmobNativeDelegate :
+internal class AdmobNativeDelegate :
     BaseAds<NativeAd, ShowParam.SPAdmobNative>(),
     Param.AdmobNative.IAdmobNative
 {
@@ -111,13 +111,13 @@ class AdmobNativeDelegate :
 
 class AdmobNative constructor(
     lifecycleOwner: LifecycleOwner?,
-    ad: AdmobNativeDelegate = AdmobNativeDelegate()
+    ad: Param.AdmobNative.IAdmobNative = AdmobNativeDelegate()
 ) : Param.AdmobNative.IAdmobNative by ad,
     DefaultLifecycleObserver by Life(lifecycleOwner, ad),
-    IExpiration by Expiration(ad)
+    IExpiration by Expiration(ad.base())
 {
     init {
-        ad.self = this
+        ad.base().self = this
     }
 }
 

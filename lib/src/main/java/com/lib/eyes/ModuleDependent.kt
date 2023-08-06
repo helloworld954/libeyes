@@ -5,6 +5,7 @@ package com.lib.eyes
 import android.content.Context
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.ViewTreeLifecycleOwner
 import com.example.wireframe.Param
@@ -13,7 +14,6 @@ import com.example.wireframe.wireframe.AdsInterface
 import com.example.wireframe.wireframe.LoadCallback
 import com.lib.eyes.application.AdmobApplication
 import com.lib.eyes.formaldialogs.DialogFactory
-import com.lib.eyes.formaldialogs.SingleFuture
 import com.libeye.admob.AdmobBanner
 import com.libeye.admob.AdmobInterstitial
 import com.libeye.admob.AdmobNative
@@ -37,61 +37,45 @@ object CommonImpl {
         is Param.AdmobNative -> map<AdmobNative>().config(param.context, param.templateView, param.nativeId)
     } as T
 
-    fun loadAndShowNow(context: Context, adId: String, sp: ShowParam, timeout: Long) {
+    fun loadAndShowNow(
+        fragmentActivity: FragmentActivity? = null,
+        adId: String,
+        sp: ShowParam,
+        timeout: Long? = null,
+        lifecycleOwner: LifecycleOwner? = null
+    ) {
         when(sp) {
             is ShowParam.SPAdmobBanner -> {
                 AdmobBanner().show(sp)
             }
             is ShowParam.SPAdmobInterstitial -> {
+                fragmentActivity?.let { context ->
+                    val dialog = DialogFactory.createLoadingDialog(
+                        fragmentActivity
+                    )
 
-                AdmobInterstitial(timeout = timeout).let {
-                    it.load(context, adId, object: LoadCallback {
-                        override fun loadFailed() {
-                            sp.showCallback?.onFailed()
-                        }
+                    AdmobInterstitial(timeout = timeout).let {
+                        it.load(context, adId, object: LoadCallback {
+                            override fun loadFailed() {
+                                sp.showCallback?.onFailed()
+                                dialog.dismiss()
+                            }
 
-                        override fun loadSuccess() {
-                            it.show(sp)
-                        }
-                    })
+                            override fun loadSuccess() {
+                                dialog.dismiss()
+                                it.show(sp)
+                            }
+                        })
+                    }
                 }
             }
             is ShowParam.SPAdmobNative -> {
-
+                AdmobNative(lifecycleOwner = lifecycleOwner).show(param = sp)
             }
 
             is ShowParam.SPAdmobOpenApp -> {
 
             }
-        }
-    }
-
-    fun loadAndShowInterstitialNow(fragmentActivity: FragmentActivity, adId: String, sp: ShowParam, timeout: Long) {
-        if (sp !is ShowParam.SPAdmobInterstitial) {
-            Log.d("Eyes", "loadAndShowInterstitialNow: wrong param type")
-            return
-        }
-
-        val flow = SingleFuture<Unit>()
-
-        DialogFactory.createLoadingDialog(
-            fragmentActivity,
-            flow,
-            timeout
-        )
-
-        AdmobInterstitial(timeout = timeout).let {
-            it.load(fragmentActivity, adId, object: LoadCallback {
-                override fun loadFailed() {
-                    sp.showCallback?.onFailed()
-                    flow.complete(Unit)
-                }
-
-                override fun loadSuccess() {
-                    flow.complete(Unit)
-                    it.show(sp)
-                }
-            })
         }
     }
 

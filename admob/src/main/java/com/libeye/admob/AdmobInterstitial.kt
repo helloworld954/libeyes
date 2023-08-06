@@ -17,7 +17,7 @@ import com.example.wireframe.*
 import com.example.wireframe.wireframe.ITimeout
 import com.example.wireframe.wireframe.Timeout
 
-class AdmobInterstitialDelegate :
+internal class AdmobInterstitialDelegate :
     BaseAds<InterstitialAd, ShowParam.SPAdmobInterstitial>(),
     Param.AdmobInterstitial.IAdmobInterstitial
 {
@@ -36,20 +36,21 @@ class AdmobInterstitialDelegate :
         if (isAvailable() || isLoading) return this
 
         isLoading = true
+        this.loadCallback = loadCallback
         val adRequest = AdRequest.Builder().build()
 
         InterstitialAd.load(context, interId, adRequest, object : InterstitialAdLoadCallback() {
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 this@AdmobInterstitialDelegate.release()
                 this@AdmobInterstitialDelegate.isLoading = false
-                loadCallback?.loadFailed()
+                this@AdmobInterstitialDelegate.loadFailed()
             }
 
             override fun onAdLoaded(interstitialAd: InterstitialAd) {
                 interstitialAd.fullScreenContentCallback = fullScreenContentCallback
                 this@AdmobInterstitialDelegate.hold(interstitialAd)
                 this@AdmobInterstitialDelegate.isLoading = false
-                loadCallback?.loadSuccess()
+                this@AdmobInterstitialDelegate.loadSuccess()
             }
         })
 
@@ -102,18 +103,22 @@ class AdmobInterstitialDelegate :
 }
 
 class AdmobInterstitial constructor(
-    private val ads: AdmobInterstitialDelegate = AdmobInterstitialDelegate(),
+    private val ads: Param.AdmobInterstitial.IAdmobInterstitial = AdmobInterstitialDelegate(),
     timeout: Long? = null
 ) : Param.AdmobInterstitial.IAdmobInterstitial by ads,
     ISeparateShow<ShowParam.SPAdmobInterstitial> by SeparateShow(ads),
-    ITimeout by Timeout(ads, timeout)
+    ITimeout by Timeout(ads.base(), timeout)
 {
     init {
-        ads.self = this
+        ads.base().self = this
     }
 
-    override fun show(param: ShowParam.SPAdmobInterstitial) {
+    override fun load(
+        context: Context,
+        interId: String,
+        loadCallback: LoadCallback?
+    ): Param.AdmobInterstitial.IAdmobInterstitial = apply {
         startTimeout()
-        ads.show(param)
+        ads.load(context, interId, loadCallback)
     }
 }

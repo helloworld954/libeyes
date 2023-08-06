@@ -11,6 +11,7 @@ import com.example.wireframe.wireframe.LoadCallback
 import com.example.wireframe.wireframe.ShowCallback
 import com.lib.eyes.AdsPool
 import com.lib.eyes.BuildConfig
+import com.lib.eyes.formaldialogs.DialogFactory
 import com.lib.eyes.utils.PermissionRequest
 import com.lib.eyes.utils.PermissionRequestState
 
@@ -35,8 +36,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         findViewById<Button>(R.id.btn_inter_immediately).setOnClickListener {
-            AdsPool.loadAndShowImmediately(this, BuildConfig.inter_main, ShowParam.SPAdmobInterstitial(
-                this, object : ShowCallback {
+            AdsPool.loadAndShowImmediately(
+                BuildConfig.inter_main,
+                ShowParam.SPAdmobInterstitial(this@MainActivity, object :
+                    ShowCallback {
                     override fun onSuccess() {
                         Log.d("vanh: MainActivity", "onSuccess: ")
                     }
@@ -46,97 +49,67 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     override fun onClosed() {
-
-                    }
-                })
-            )
-        }
-
-        AdsPool.prepareAd<Param.AdmobNative.IAdmobNative>(
-            BuildConfig.native_main, Param.AdmobNative(
-                this,
-                findViewById(R.id.my_template),
-                BuildConfig.native_main,
-            )
-        ).show(ShowParam.SPAdmobNative(object : ShowCallback {
-            override fun onSuccess() {
-                Log.d("vanh: MainActivity", "onSuccess: AdmobNative")
-            }
-
-            override fun onFailed() {
-                Log.d("vanh: MainActivity", "onFailed: AdmobNative")
-            }
-        }))
-
-        AdsPool.loadAndShowImmediately(this, BuildConfig.banner_main, ShowParam.SPAdmobBanner(
-            findViewById(R.id.banner_template),
-            BuildConfig.banner_main,
-            showCallback = object : ShowCallback {
-                override fun onSuccess() {
-                    Log.d("vanh: MainActivity", "onSuccess: ")
-                }
-
-                override fun onFailed() {
-                    Log.d("vanh: MainActivity", "onFailed: SPAdmobBanner")
-                }
-
-                override fun onClicked() {
-                    super.onClicked()
-                    Log.d("vanh: MainActivity", "onClicked: ")
-                }
-
-                override fun onClosed() {
-                    super.onClosed()
-                    Log.d("vanh: MainActivity", "onClosed: ")
-                }
-            },
-            loadCallback = object : LoadCallback {
-                override fun loadSuccess() {
-                    Log.d("vanh: MainActivity", "loadSuccess: ")
-                }
-
-                override fun loadFailed() {
-                    Log.d("vanh: MainActivity", "loadFailed: SPAdmobBanner")
-                }
-            }
-        ))
-
-        val param = Param.AdmobInterstitial(
-            this.applicationContext, BuildConfig.inter_main, object : LoadCallback {
-                override fun loadSuccess() {
-                    Log.d("vanh: MainActivity", "loadSuccess: ")
-                }
-
-                override fun loadFailed() {
-                    Log.d("vanh: MainActivity", "loadFailed: ")
-                }
-            }
-        )
-//        AdsPool.prepareAd<Param.AdmobInterstitial.IAdmobInterstitial>(
-//            adId = BuildConfig.inter_main,
-//            param = param,
-//            separateTime = 3
-//        )
-
-        findViewById<Button>(R.id.btn_inter).setOnClickListener {
-            AdsPool.loadAndShowInterstitialImmediately(this, BuildConfig.inter_main, ShowParam.SPAdmobInterstitial(this@MainActivity, object :
-                ShowCallback {
-                override fun onSuccess() {
-                    Log.d("vanh: MainActivity", "onSuccess: ")
-                }
-
-                override fun onFailed() {
-                    Log.d("vanh: MainActivity", "onFailed: ")
-                }
-
-                override fun onClosed() {
 //                    AdsPool.prepareAd<Param.AdmobInterstitial.IAdmobInterstitial>(
 //                        adId = BuildConfig.inter_main,
 //                        param = param,
 //                        separateTime = 3
 //                    )
-                }
-            }))
+                    }
+                }),
+                fragmentActivity = this,
+                timeout = 5000
+            )
         }
+
+//        AdsPool.prepareAd<Param.AdmobNative.IAdmobNative>(
+//            BuildConfig.native_main, Param.AdmobNative(
+//                this,
+//                findViewById(R.id.my_template),
+//                BuildConfig.native_main,
+//            )
+//        ).show(ShowParam.SPAdmobNative(object : ShowCallback {
+//            override fun onSuccess() {
+//                Log.d("vanh: MainActivity", "onSuccess: AdmobNative")
+//            }
+//
+//            override fun onFailed() {
+//                Log.d("vanh: MainActivity", "onFailed: AdmobNative")
+//            }
+//        }))
+//
+//        AdsPool.loadAndShowImmediately(
+//            BuildConfig.banner_main,
+//            ShowParam.SPAdmobBanner(
+//                findViewById(R.id.banner_template),
+//                BuildConfig.banner_main,
+//                showCallback = object : ShowCallback {
+//                    override fun onSuccess() {
+//                        Log.d("vanh: MainActivity", "onSuccess: ")
+//                    }
+//
+//                    override fun onFailed() {
+//                        Log.d("vanh: MainActivity", "onFailed: SPAdmobBanner")
+//                    }
+//
+//                    override fun onClicked() {
+//                        super.onClicked()
+//                        Log.d("vanh: MainActivity", "onClicked: ")
+//                    }
+//
+//                    override fun onClosed() {
+//                        super.onClosed()
+//                        Log.d("vanh: MainActivity", "onClosed: ")
+//                    }
+//                },
+//                loadCallback = object : LoadCallback {
+//                    override fun loadSuccess() {
+//                        Log.d("vanh: MainActivity", "loadSuccess: ")
+//                    }
+//
+//                    override fun loadFailed() {
+//                        Log.d("vanh: MainActivity", "loadFailed: SPAdmobBanner")
+//                    }
+//                }
+//            ))
     }
 }
