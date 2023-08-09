@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace 'com.example.wireframe'
+    namespace 'com.libeye.wireframe'
     compileSdk 33
 
     defaultConfig {

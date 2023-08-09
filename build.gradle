@@ -13,3 +13,13 @@ plugins {
     id 'org.jetbrains.kotlin.android' version '1.8.0' apply false
     id 'maven-publish'
 }
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = 'com.github.helloworld954'
+            artifactId = 'libeyes'
+            version = 'SNAPSHOT'
+        }
+    }
+}
