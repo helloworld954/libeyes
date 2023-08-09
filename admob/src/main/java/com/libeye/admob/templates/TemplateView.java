@@ -296,4 +296,5 @@ public class TemplateView extends AdmobTemplateView<NativeAdView, NativeAd> {
     mediaView = (MediaView) findViewById(R.id.media_view);
     background = (ConstraintLayout) findViewById(R.id.background);
   }
+
 }

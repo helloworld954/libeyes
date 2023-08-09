@@ -173,15 +173,6 @@ public abstract class AdmobTemplateView<AV, NA> extends FrameLayout {
      */
     public abstract void destroyNativeAd();
 
-    public String getTemplateTypeName() {
-        if (templateType == R.layout.gnt_medium_template_view) {
-            return MEDIUM_TEMPLATE;
-        } else if (templateType == R.layout.gnt_small_template_view) {
-            return SMALL_TEMPLATE;
-        }
-        return "";
-    }
-
     protected abstract void initView(Context context, AttributeSet attributeSet);
 }
 
