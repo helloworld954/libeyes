@@ -1,6 +1,23 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'maven-publish'
+}
+
+def libraryVersion = 'SNAPSHOT'
+
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId = 'com.github.helloworld954'
+            artifactId = 'libeyes'
+            version = "$libraryVersion"
+
+            afterEvaluate {
+                from components.release
+            }
+        }
+    }
 }
 
 def adsProperties = new Properties()
@@ -60,6 +77,12 @@ android {
     }
     buildFeatures {
         viewBinding true
+    }
+
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+        }
     }
 
 //    lintOptions {
