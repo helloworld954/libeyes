@@ -2,10 +2,10 @@ package com.lib.eyes
 
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
-import com.example.wireframe.Param
-import com.example.wireframe.ShowParam
-import com.example.wireframe.wireframe.AdsInterface
-import com.example.wireframe.wireframe.ISeparateShow
+import com.libeye.wireframe.Param
+import com.libeye.wireframe.ShowParam
+import com.libeye.wireframe.wireframe.AdsInterface
+import com.libeye.wireframe.wireframe.ISeparateShow
 import com.lib.eyes.CommonImpl.configAdWithParam
 import com.lib.eyes.CommonImpl.initAdWithParam
 import com.lib.eyes.CommonImpl.loadAndShowNow

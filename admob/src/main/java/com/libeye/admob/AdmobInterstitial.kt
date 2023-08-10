@@ -7,15 +7,15 @@ import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
-import com.example.wireframe.wireframe.AdsInterface
-import com.example.wireframe.wireframe.BaseAds
-import com.example.wireframe.wireframe.ISeparateShow
-import com.example.wireframe.wireframe.LoadCallback
-import com.example.wireframe.wireframe.SeparateShow
-import com.example.wireframe.wireframe.ShowCallback
-import com.example.wireframe.*
-import com.example.wireframe.wireframe.ITimeout
-import com.example.wireframe.wireframe.Timeout
+import com.libeye.wireframe.wireframe.AdsInterface
+import com.libeye.wireframe.wireframe.BaseAds
+import com.libeye.wireframe.wireframe.ISeparateShow
+import com.libeye.wireframe.wireframe.LoadCallback
+import com.libeye.wireframe.wireframe.SeparateShow
+import com.libeye.wireframe.wireframe.ShowCallback
+import com.libeye.wireframe.*
+import com.libeye.wireframe.wireframe.ITimeout
+import com.libeye.wireframe.wireframe.Timeout
 
 internal class AdmobInterstitialDelegate :
     BaseAds<InterstitialAd, ShowParam.SPAdmobInterstitial>(),

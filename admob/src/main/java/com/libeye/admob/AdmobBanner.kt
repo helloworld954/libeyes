@@ -1,10 +1,10 @@
 package com.libeye.admob
 
 import android.view.View
-import com.example.wireframe.IAdmobBanner
-import com.example.wireframe.ShowParam
-import com.example.wireframe.wireframe.AdsInterface
-import com.example.wireframe.wireframe.BaseAds
+import com.libeye.wireframe.IAdmobBanner
+import com.libeye.wireframe.ShowParam
+import com.libeye.wireframe.wireframe.AdsInterface
+import com.libeye.wireframe.wireframe.BaseAds
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView

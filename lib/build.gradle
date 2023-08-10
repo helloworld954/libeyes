@@ -6,15 +6,17 @@ plugins {
 
 def libraryVersion = 'SNAPSHOT'
 
-publishing {
-    publications {
-        release(MavenPublication) {
-            groupId = 'com.github.helloworld954'
-            artifactId = 'libeyes'
-            version = "$libraryVersion"
+allprojects {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                groupId = 'com.github.helloworld954'
+                artifactId = 'libeyes'
+                version = "$libraryVersion"
 
-            afterEvaluate {
-                from components.release
+                afterEvaluate {
+                    from components.release
+                }
             }
         }
     }

@@ -5,17 +5,17 @@ import android.content.Context
 import android.os.Bundle
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import com.example.wireframe.wireframe.AdsInterface
-import com.example.wireframe.wireframe.BaseAds
-import com.example.wireframe.wireframe.Expiration
-import com.example.wireframe.wireframe.IExpiration
-import com.example.wireframe.wireframe.ShowCallback
+import com.libeye.wireframe.wireframe.AdsInterface
+import com.libeye.wireframe.wireframe.BaseAds
+import com.libeye.wireframe.wireframe.Expiration
+import com.libeye.wireframe.wireframe.IExpiration
+import com.libeye.wireframe.wireframe.ShowCallback
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
-import com.example.wireframe.*
+import com.libeye.wireframe.*
 
 class AdmobOpenApp(
     private val adId: String

@@ -11,8 +11,8 @@ import android.view.LayoutInflater;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.wireframe.templates.AdmobBannerView;
-import com.example.wireframe.templates.BannerSize;
+import com.libeye.wireframe.templates.AdmobBannerView;
+import com.libeye.wireframe.templates.BannerSize;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;

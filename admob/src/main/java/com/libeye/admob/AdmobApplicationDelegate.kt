@@ -1,7 +1,7 @@
 package com.libeye.admob
 
 import android.app.Application
-import com.example.wireframe.application.ApplicationDelegation
+import com.libeye.wireframe.application.ApplicationDelegation
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 

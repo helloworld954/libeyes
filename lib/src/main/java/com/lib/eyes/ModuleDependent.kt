@@ -2,16 +2,14 @@
 
 package com.lib.eyes
 
-import android.content.Context
-import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.lifecycle.ViewTreeLifecycleOwner
-import com.example.wireframe.Param
-import com.example.wireframe.ShowParam
-import com.example.wireframe.wireframe.AdsInterface
-import com.example.wireframe.wireframe.LoadCallback
+import com.libeye.wireframe.Param
+import com.libeye.wireframe.ShowParam
+import com.libeye.wireframe.wireframe.AdsInterface
+import com.libeye.wireframe.wireframe.LoadCallback
 import com.lib.eyes.application.AdmobApplication
 import com.lib.eyes.formaldialogs.DialogFactory
 import com.libeye.admob.AdmobBanner
