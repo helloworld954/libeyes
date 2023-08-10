@@ -4,19 +4,13 @@ plugins {
     id 'maven-publish'
 }
 
-def libraryVersion = 'SNAPSHOT'
+publishing {
+    publications {
+        release(MavenPublication) {
+            artifactId = 'libeyes'
 
-allprojects {
-    publishing {
-        publications {
-            release(MavenPublication) {
-                groupId = 'com.github.helloworld954'
-                artifactId = 'libeyes'
-                version = "$libraryVersion"
-
-                afterEvaluate {
-                    from components.release
-                }
+            afterEvaluate {
+                from components.release
             }
         }
     }
@@ -62,7 +56,7 @@ android {
             def value = variant.name.contains("release")
                     ? it.value : defaultWithType(key.substring(0, key.indexOf('.')))
 
-            if(key == key_APPID) {
+            if (key == key_APPID) {
                 variant.mergedFlavor.manifestPlaceholders.appID = value
             } else {
                 variant.buildConfigField "String", "${(it.key as String).replaceAll("\\.", "_")}", "\"$value\""
