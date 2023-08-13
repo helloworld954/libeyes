@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.libeyes.R
 import com.lib.eyes.AdsPool
-import com.lib.eyes.BuildConfig
+import com.libeye.admob.BuildConfig
 import com.lib.eyes.utils.PermissionRequest
 import com.lib.eyes.utils.PermissionRequestState
 import com.lib.eyes.wireframe.LoadCallback

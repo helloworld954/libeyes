@@ -16,58 +16,6 @@ publishing {
     }
 }
 
-class Globals {
-    static String id_app = 'ca-app-pub-3940256099942544~3347511713'
-    static String id_native_test = "ca-app-pub-3940256099942544/2247696110"
-    static String id_banner_test = "ca-app-pub-3940256099942544/6300978111"
-    static String id_inter_test = "ca-app-pub-3940256099942544/1033173712"
-    static String id_reward_test = "ca-app-pub-3940256099942544/5224354917"
-    static String id_openApp_test = "ca-app-pub-3940256099942544/3419835294"
-}
-
-static String defaultWithType(String prefix) {
-    switch (prefix) {
-        case "native":
-            return Globals.id_native_test
-        case "banner":
-            return Globals.id_banner_test
-        case "inter":
-            return Globals.id_inter_test
-        case "reward":
-            return Globals.id_reward_test
-        case "openApp":
-            return Globals.id_openApp_test
-        case "app":
-            return Globals.id_app
-    }
-
-    return "___"
-}
-
-def key_APPID = "app.APP_ID"
-
-def adsProperties = new Properties()
-File propsFile = new File(rootDir, "ads-id.properties")
-if (propsFile.exists()) {
-    adsProperties.clear()
-
-    propsFile.withInputStream {
-        adsProperties.load(it)
-    }
-} else {
-    assert propsFile.createNewFile()
-
-    Properties properties = new Properties();
-
-    propsFile.withWriterAppend { writer ->
-        writer.writeLine("$key_APPID=${Globals.id_app}")
-    }
-
-    adsProperties = properties.clone()
-    properties.clear()
-}
-def config = new Properties()
-
 android {
     namespace 'com.lib.eyes'
     compileSdk 33
@@ -84,27 +32,6 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-
-            manifestPlaceholders = ["appID": adsProperties.getProperty(key_APPID)]
-        }
-
-        debug {
-            manifestPlaceholders = ["appID": Globals.id_app]
-        }
-    }
-
-    libraryVariants.all { variant ->
-        (adsProperties as Properties).each {
-            def key = it.key as String
-            // variant.buildType.name.equals("release")
-            def value = variant.name.contains("release")
-                    ? it.value : defaultWithType(key.substring(0, key.indexOf('.')))
-
-            if (key == key_APPID) {
-                variant.mergedFlavor.manifestPlaceholders = ["appID": value]
-            } else {
-                variant.buildConfigField "String", "${(it.key as String).replaceAll("\\.", "_")}", "\"$value\""
-            }
         }
     }
 
@@ -119,47 +46,9 @@ android {
         viewBinding true
     }
 
-    publishing {
-        singleVariant('release') {
-            withSourcesJar()
-        }
-    }
-
 //    lintOptions {
 //        resourcePrefix 'le_'
 //    }
-}
-
-gradle.afterProject { project ->
-    project.task(dependsOn: loadConfig) {
-
-    }
-}
-
-task loadConfig {
-    File configFile = new File(rootDir, "config.properties")
-    if (!configFile.exists()) {
-        assert configFile.createNewFile()
-
-        Properties properties = new Properties();
-        properties.setProperty("firebase_analytics", "false")
-//        properties.setProperty(Globals.fc, false)
-//        properties.setProperty(Globals.fcm, false)
-//        properties.setProperty(Globals.frc, false)
-
-        configFile.withWriterAppend { writer ->
-            properties.forEach { key, value ->
-                writer.writeLine("$key=$value")
-            }
-        }
-
-        properties.clear()
-    }
-
-    config.clear()
-    configFile.withInputStream {
-        config.load(it)
-    }
 }
 
 dependencies {

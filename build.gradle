@@ -14,10 +14,10 @@ plugins {
 }
 
 ext {
-    libVersion = "0.0.6"
+    libVersion = "SNAPSHOT"
 }
 
 allprojects {
-    group = "com.libeyes.local"
+    group = "com.github.helloworld954"
     version = "${rootProject.ext.libVersion}"
 }

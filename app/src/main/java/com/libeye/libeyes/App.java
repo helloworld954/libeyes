@@ -1,12 +1,11 @@
 package com.libeye.libeyes;
 
+import com.lib.eyes.AdsPool;
 import com.lib.eyes.application.BaseApplication;
 import com.libeye.admob.AdmobExtKt;
+import com.libeye.admob.BuildConfig;
 import com.libeye.admob.application.AdmobApplicationDelegate;
-import com.lib.eyes.AdsPool;
-import com.lib.eyes.BuildConfig;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class App extends BaseApplication {
