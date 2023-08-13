@@ -1,15 +1,12 @@
 package com.lib.eyes
 
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.LifecycleOwner
-import com.libeye.wireframe.Param
-import com.libeye.wireframe.ShowParam
-import com.libeye.wireframe.wireframe.AdsInterface
-import com.libeye.wireframe.wireframe.ISeparateShow
-import com.lib.eyes.CommonImpl.configAdWithParam
-import com.lib.eyes.CommonImpl.initAdWithParam
-import com.lib.eyes.CommonImpl.loadAndShowNow
-import com.lib.eyes.application.AdmobApplication
+import com.lib.eyes.formaldialogs.DialogFactory
+import com.lib.eyes.utils.IndependenceDialog
+import com.lib.eyes.wireframe.AdsInterface
+import com.lib.eyes.wireframe.ISeparateShow
+import com.lib.eyes.wireframe.LoadCallback
 
 object AdsPool {
     private val pool: HashMap<String, AdsInterface<ShowParam>> = hashMapOf()
@@ -18,30 +15,30 @@ object AdsPool {
      * This function is used for caching ads
      *
      * Generic must be `Param.<type>.<interface>`
-     * @sample [Param.AdmobInterstitial.IAdmobInterstitial]
+     * @sample [LoadParam.AdmobInterstitial.IAdmobInterstitial]
      */
-    fun <T> prepareAd(adId: String, param: Param, separateTime: Int? = null): T {
-        val ad = pool[adId] ?: kotlin.run {
-            initAdWithParam(param, separateTime).also {
-                pool[adId] = it
+    fun <T: ShowParam> prepareAd(tag: String, loadParam: LoadParam): AdsInterface<T> {
+        val ad = pool[tag] ?: kotlin.run {
+            loadParam.createAd<ShowParam>().also {
+                pool[tag] = it
             }
         }
 
-        return ad.configAdWithParam(param)
+        return ad as AdsInterface<T>
     }
 
     /**
      * Pass corresponding param with type of ad which is wanted to show
      */
-    fun show(adId: String, param: ShowParam) {
-        pool[adId]?.show(param) ?: kotlin.run {
+    fun show(tag: String, param: ShowParam) {
+        pool[tag]?.show(param) ?: kotlin.run {
             param.showCallback?.onFailed()
         }
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun showSeparate(adId: String, param: ShowParam) {
-        pool[adId]?.let {
+    fun showSeparate(tag: String, param: ShowParam) {
+        pool[tag]?.let {
             if(it is ISeparateShow<*>) {
                 (it as ISeparateShow<ShowParam>).showSeparate(param)
             }
@@ -52,25 +49,43 @@ object AdsPool {
      * This function is used for loading then show loaded ads without cache
      *
      * @param sp show-param is used for show ad [ShowParam]
-     * @param fragmentActivity is needed for [ShowParam.SPAdmobInterstitial]
-     * @param timeout (in millis) is needed for [ShowParam.SPAdmobInterstitial]
-     * @param lifecycleOwner is optional for [ShowParam.SPAdmobNative]
+     * @param fragmentActivity is needed for showing dialog with [AdmobShowParam.SPAdmobInterstitial]
      */
     fun loadAndShowImmediately(
-        adId: String,
+        lp: LoadParam,
         sp: ShowParam,
-        fragmentActivity: FragmentActivity? = null,
-        timeout: Long? = Const.TIMEOUT,
-        lifecycleOwner: LifecycleOwner? = null
+        fragmentActivity: FragmentActivity? = null
     ) {
-        loadAndShowNow(fragmentActivity, adId, sp, timeout, lifecycleOwner)
-    }
+        lp.loadCallback?.let { callback ->
+            var ad: AdsInterface<ShowParam>? = null
+            var dialog: DialogFragment? = null
 
-    /**
-     * Only call in Application.onCreate
-     */
-    fun registerOpenAppAd(application: AdmobApplication, adId: String) {
-        AdmobImpl.registerOpenAppAd(application, adId)
+            lp.loadCallback = object : LoadCallback {
+                override fun loadSuccess() {
+                    callback.loadSuccess()
+                    ad?.show(sp)
+
+                    dialog?.dismiss()
+                }
+
+                override fun loadFailed() {
+                    callback.loadFailed()
+                    sp.showCallback?.onFailed()
+
+                    dialog?.dismiss()
+                }
+            }
+
+            if (lp.tag == LoadParam.TAG.INTER && fragmentActivity != null) {
+                dialog = DialogFactory.createLoadingDialog(
+                    fragmentActivity
+                )
+            }
+
+            ad = lp.createAd()
+        } ?: run {
+            lp.createAd<ShowParam>().show(sp)
+        }
     }
 }
 

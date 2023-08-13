@@ -7,18 +7,17 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.libeye.wireframe.templates.AdmobBannerView;
-import com.libeye.wireframe.templates.BannerSize;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.libeye.admob.R;
 
-public class BannerView extends AdmobBannerView<AdView, AdSize> {
+public class BannerView extends FrameLayout {
     private BannerSize size;
 
     private ShimmerFrameLayout mAdsFrame;
@@ -83,5 +82,11 @@ public class BannerView extends AdmobBannerView<AdView, AdSize> {
         } else {
             return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(getContext(), adWidth);
         }
+    }
+
+    protected Activity requireActivity() {
+        if(getContext() instanceof Activity) return (Activity) getContext();
+
+        throw new RuntimeException("Context is not activity in BannerView");
     }
 }

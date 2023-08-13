@@ -22,6 +22,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -29,7 +30,6 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.libeye.wireframe.templates.AdmobTemplateView;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.nativead.MediaView;
 import com.google.android.gms.ads.nativead.NativeAd;
@@ -39,7 +39,23 @@ import com.libeye.admob.R;
 /**
  * Base class for a template view. *
  */
-public class TemplateView extends AdmobTemplateView<NativeAdView, NativeAd> {
+public class TemplateView extends FrameLayout {
+  private int templateType;
+  private NativeTemplateStyle styles;
+
+  private NativeAd nativeAd;
+  private NativeAdView nativeAdView;
+
+  private TextView primaryView;
+  private TextView secondaryView;
+  private RatingBar ratingBar;
+  private TextView tertiaryView;
+  private ImageView iconView;
+  private Button callToActionView;
+  private ConstraintLayout background;
+
+  private static final String MEDIUM_TEMPLATE = "medium_template";
+  private static final String SMALL_TEMPLATE = "small_template";
   private MediaView mediaView;
   private ShimmerFrameLayout mAdsFrame;
 
@@ -49,21 +65,24 @@ public class TemplateView extends AdmobTemplateView<NativeAdView, NativeAd> {
 
   public TemplateView(Context context, @Nullable AttributeSet attrs) {
     super(context, attrs);
+    initView(context, attrs);
   }
 
   public TemplateView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
+    initView(context, attrs);
   }
 
   public TemplateView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
     super(context, attrs, defStyleAttr, defStyleRes);
+    initView(context, attrs);
   }
 
   public NativeAdView getNativeAdView() {
     return nativeAdView;
   }
 
-  protected void applyStyles() {
+  private void applyStyles() {
     Drawable mainBackground = styles.getMainBackgroundColor();
     if (mainBackground != null) {
       background.setBackground(mainBackground);
@@ -158,7 +177,7 @@ public class TemplateView extends AdmobTemplateView<NativeAdView, NativeAd> {
     requestLayout();
   }
 
-  protected boolean adHasOnlyStore(NativeAd nativeAd) {
+  private boolean adHasOnlyStore(NativeAd nativeAd) {
     String store = nativeAd.getStore();
     String advertiser = nativeAd.getAdvertiser();
     return !TextUtils.isEmpty(store) && TextUtils.isEmpty(advertiser);
@@ -224,6 +243,11 @@ public class TemplateView extends AdmobTemplateView<NativeAdView, NativeAd> {
     nativeAdView.setNativeAd(nativeAd);
   }
 
+  public void setStyles(NativeTemplateStyle styles) {
+    this.styles = styles;
+    this.applyStyles();
+  }
+
   public void reinflate() {
     Context context = this.getContext();
 
@@ -256,7 +280,7 @@ public class TemplateView extends AdmobTemplateView<NativeAdView, NativeAd> {
     nativeAd.destroy();
   }
 
-  protected void initView(Context context, AttributeSet attributeSet) {
+  private void initView(Context context, AttributeSet attributeSet) {
     TypedArray attributes =
             context.getTheme().obtainStyledAttributes(attributeSet, R.styleable.TemplateView, 0, 0);
 

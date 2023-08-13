@@ -7,19 +7,20 @@ import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
-import com.libeye.wireframe.wireframe.AdsInterface
-import com.libeye.wireframe.wireframe.BaseAds
-import com.libeye.wireframe.wireframe.ISeparateShow
-import com.libeye.wireframe.wireframe.LoadCallback
-import com.libeye.wireframe.wireframe.SeparateShow
-import com.libeye.wireframe.wireframe.ShowCallback
-import com.libeye.wireframe.*
-import com.libeye.wireframe.wireframe.ITimeout
-import com.libeye.wireframe.wireframe.Timeout
+import com.lib.eyes.wireframe.AdsInterface
+import com.lib.eyes.wireframe.BaseAds
+import com.lib.eyes.wireframe.ISeparateShow
+import com.lib.eyes.wireframe.ITimeout
+import com.lib.eyes.wireframe.LoadCallback
+import com.lib.eyes.wireframe.SeparateShow
+import com.lib.eyes.wireframe.ShowCallback
+import com.lib.eyes.wireframe.Timeout
+import com.libeye.admob.params.AdMobLoadParam
+import com.libeye.admob.params.AdMobShowParam
 
 internal class AdmobInterstitialDelegate :
-    BaseAds<InterstitialAd, ShowParam.SPAdmobInterstitial>(),
-    Param.AdmobInterstitial.IAdmobInterstitial
+    BaseAds<InterstitialAd, AdMobShowParam.SPAdmobInterstitial>(),
+    AdMobLoadParam.AdmobInterstitial.IAdmobInterstitial
 {
     private var isShowing = false
     private var isLoading = false
@@ -32,7 +33,7 @@ internal class AdmobInterstitialDelegate :
         context: Context,
         interId: String,
         loadCallback: LoadCallback?
-    ): Param.AdmobInterstitial.IAdmobInterstitial {
+    ): AdMobLoadParam.AdmobInterstitial.IAdmobInterstitial {
         if (isAvailable() || isLoading) return this
 
         isLoading = true
@@ -57,7 +58,7 @@ internal class AdmobInterstitialDelegate :
         return this
     }
 
-    override fun show(param: ShowParam.SPAdmobInterstitial) {
+    override fun show(param: AdMobShowParam.SPAdmobInterstitial) {
         val (activity, callback) = param
 
         if (isShowing || !isAvailable() || activity == null) {
@@ -74,7 +75,7 @@ internal class AdmobInterstitialDelegate :
         this.callback = null
     }
 
-    override fun initSelf(): AdsInterface<ShowParam.SPAdmobInterstitial> = this
+    override fun initSelf(): AdsInterface<AdMobShowParam.SPAdmobInterstitial> = this
 
     private inner class AdmobInterstitialCallback : FullScreenContentCallback() {
         override fun onAdFailedToShowFullScreenContent(adError: AdError) {
@@ -103,10 +104,10 @@ internal class AdmobInterstitialDelegate :
 }
 
 class AdmobInterstitial constructor(
-    private val ads: Param.AdmobInterstitial.IAdmobInterstitial = AdmobInterstitialDelegate(),
+    private val ads: AdMobLoadParam.AdmobInterstitial.IAdmobInterstitial = AdmobInterstitialDelegate(),
     timeout: Long? = null
-) : Param.AdmobInterstitial.IAdmobInterstitial by ads,
-    ISeparateShow<ShowParam.SPAdmobInterstitial> by SeparateShow(ads),
+) : AdMobLoadParam.AdmobInterstitial.IAdmobInterstitial by ads,
+    ISeparateShow<AdMobShowParam.SPAdmobInterstitial> by SeparateShow(ads),
     ITimeout by Timeout(ads.base(), timeout)
 {
     init {
@@ -117,7 +118,7 @@ class AdmobInterstitial constructor(
         context: Context,
         interId: String,
         loadCallback: LoadCallback?
-    ): Param.AdmobInterstitial.IAdmobInterstitial = apply {
+    ): AdMobLoadParam.AdmobInterstitial.IAdmobInterstitial = apply {
         startTimeout()
         ads.load(context, interId, loadCallback)
     }

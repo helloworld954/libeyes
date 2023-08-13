@@ -16,9 +16,6 @@ publishing {
     }
 }
 
-def adsProperties = new Properties()
-def config = new Properties()
-
 class Globals {
     static String id_app = 'ca-app-pub-3940256099942544~3347511713'
     static String id_native_test = "ca-app-pub-3940256099942544/2247696110"
@@ -28,7 +25,48 @@ class Globals {
     static String id_openApp_test = "ca-app-pub-3940256099942544/3419835294"
 }
 
+static String defaultWithType(String prefix) {
+    switch (prefix) {
+        case "native":
+            return Globals.id_native_test
+        case "banner":
+            return Globals.id_banner_test
+        case "inter":
+            return Globals.id_inter_test
+        case "reward":
+            return Globals.id_reward_test
+        case "openApp":
+            return Globals.id_openApp_test
+        case "app":
+            return Globals.id_app
+    }
+
+    return "___"
+}
+
 def key_APPID = "app.APP_ID"
+
+def adsProperties = new Properties()
+File propsFile = new File(rootDir, "ads-id.properties")
+if (propsFile.exists()) {
+    adsProperties.clear()
+
+    propsFile.withInputStream {
+        adsProperties.load(it)
+    }
+} else {
+    assert propsFile.createNewFile()
+
+    Properties properties = new Properties();
+
+    propsFile.withWriterAppend { writer ->
+        writer.writeLine("$key_APPID=${Globals.id_app}")
+    }
+
+    adsProperties = properties.clone()
+    properties.clear()
+}
+def config = new Properties()
 
 android {
     namespace 'com.lib.eyes'
@@ -46,6 +84,12 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            manifestPlaceholders = ["appID": adsProperties.getProperty(key_APPID)]
+        }
+
+        debug {
+            manifestPlaceholders = ["appID": Globals.id_app]
         }
     }
 
@@ -57,7 +101,7 @@ android {
                     ? it.value : defaultWithType(key.substring(0, key.indexOf('.')))
 
             if (key == key_APPID) {
-                variant.mergedFlavor.manifestPlaceholders.appID = value
+                variant.mergedFlavor.manifestPlaceholders = ["appID": value]
             } else {
                 variant.buildConfigField "String", "${(it.key as String).replaceAll("\\.", "_")}", "\"$value\""
             }
@@ -92,51 +136,10 @@ gradle.afterProject { project ->
     }
 }
 
-static String defaultWithType(String prefix) {
-    switch (prefix) {
-        case "native":
-            return Globals.id_native_test
-        case "banner":
-            return Globals.id_banner_test
-        case "inter":
-            return Globals.id_inter_test
-        case "reward":
-            return Globals.id_reward_test
-        case "openApp":
-            return Globals.id_openApp_test
-        case "app":
-            return Globals.id_app
-    }
-
-    return "___"
-}
-
-task createIfPossible {
-    File propsFile = new File(rootDir, "ads-id.properties")
-    if (!propsFile.exists()) {
-        assert propsFile.createNewFile()
-
-        Properties properties = new Properties();
-
-        propsFile.withWriterAppend { writer ->
-            writer.writeLine("$key_APPID=${Globals.id_app}")
-        }
-
-        properties.clear()
-    }
-
-    adsProperties.clear()
-    propsFile.withInputStream {
-        adsProperties.load(it)
-    }
-}
-
 task loadConfig {
-    dependsOn(createIfPossible)
-
-    File propsFile = new File(rootDir, "config.properties")
-    if (!propsFile.exists()) {
-        assert propsFile.createNewFile()
+    File configFile = new File(rootDir, "config.properties")
+    if (!configFile.exists()) {
+        assert configFile.createNewFile()
 
         Properties properties = new Properties();
         properties.setProperty("firebase_analytics", "false")
@@ -144,7 +147,7 @@ task loadConfig {
 //        properties.setProperty(Globals.fcm, false)
 //        properties.setProperty(Globals.frc, false)
 
-        propsFile.withWriterAppend { writer ->
+        configFile.withWriterAppend { writer ->
             properties.forEach { key, value ->
                 writer.writeLine("$key=$value")
             }
@@ -154,15 +157,12 @@ task loadConfig {
     }
 
     config.clear()
-    propsFile.withInputStream {
+    configFile.withInputStream {
         config.load(it)
     }
 }
 
 dependencies {
-    api project(":wireframe")
-    implementation project(":admob")
-
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
@@ -179,6 +179,5 @@ dependencies {
     //firebase
     implementation(platform("com.google.firebase:firebase-bom:32.2.0"))
     implementation("com.google.firebase:firebase-analytics-ktx")
-
 
 }

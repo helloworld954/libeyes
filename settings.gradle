@@ -16,4 +16,3 @@ rootProject.name = "LibEyes"
 include ':app'
 include ':lib'
 include ':admob'
-include ':wireframe'

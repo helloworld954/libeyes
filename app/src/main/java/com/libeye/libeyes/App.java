@@ -1,24 +1,28 @@
 package com.libeye.libeyes;
 
-import com.libeye.wireframe.application.ApplicationDelegation;
+import com.lib.eyes.application.BaseApplication;
+import com.libeye.admob.AdmobExtKt;
+import com.libeye.admob.application.AdmobApplicationDelegate;
 import com.lib.eyes.AdsPool;
 import com.lib.eyes.BuildConfig;
-import com.lib.eyes.application.AdmobApplication;
-import com.lib.eyes.application.AdmobApplicationKt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class App extends AdmobApplication {
-    private final ApplicationDelegation delegation =
-            AdmobApplicationKt.createDelegation(this, new ArrayList<>(
-                    Arrays.asList()
-            ));
-
+public class App extends BaseApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        delegation.onCreate();
-        AdsPool.INSTANCE.registerOpenAppAd(this, BuildConfig.openApp_main);
+        registerApplicationLifecycleCallback(
+                new AdmobApplicationDelegate(
+                        this,
+                        Arrays.asList("fkldjkl")
+                )
+        );
+        AdmobExtKt.registerOpenAppAd(
+                AdsPool.INSTANCE,
+                this,
+                BuildConfig.openApp_main
+        );
     }
 }

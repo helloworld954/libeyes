@@ -6,36 +6,36 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.libeye.wireframe.*
-import com.libeye.wireframe.templates.AdmobTemplateView
-import com.libeye.wireframe.templates.NativeTemplateStyle
-import com.libeye.wireframe.wireframe.AdsInterface
-import com.libeye.wireframe.wireframe.BaseAds
-import com.libeye.wireframe.wireframe.Expiration
-import com.libeye.wireframe.wireframe.IExpiration
-import com.libeye.wireframe.wireframe.Life
-import com.libeye.wireframe.wireframe.LoadCallback
-import com.libeye.wireframe.wireframe.ShowCallback
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
+import com.lib.eyes.wireframe.AdsInterface
+import com.lib.eyes.wireframe.BaseAds
+import com.lib.eyes.wireframe.Expiration
+import com.lib.eyes.wireframe.IExpiration
+import com.lib.eyes.wireframe.Life
+import com.lib.eyes.wireframe.LoadCallback
+import com.lib.eyes.wireframe.ShowCallback
+import com.libeye.admob.params.AdMobLoadParam
+import com.libeye.admob.params.AdMobShowParam
+import com.libeye.admob.templates.NativeTemplateStyle
 import com.libeye.admob.templates.TemplateView
 
 internal class AdmobNativeDelegate :
-    BaseAds<NativeAd, ShowParam.SPAdmobNative>(),
-    Param.AdmobNative.IAdmobNative
+    BaseAds<NativeAd, AdMobShowParam.SPAdmobNative>(),
+    AdMobLoadParam.AdmobNative.IAdmobNative
 {
     private var adLoader: AdLoader? = null
     private var callback: ShowCallback? = null
 
     override fun config(
         context: Context,
-        templateView: AdmobTemplateView<*, *>,
+        templateView: TemplateView,
         nativeId: String
-    ): Param.AdmobNative.IAdmobNative {
+    ): AdMobLoadParam.AdmobNative.IAdmobNative {
         if (adLoader != null) return this
 
         this.adLoader = AdLoader.Builder(context, nativeId)
@@ -55,7 +55,7 @@ internal class AdmobNativeDelegate :
                         Color.WHITE
                     )
                 ).build()
-                val template: TemplateView = templateView as TemplateView
+                val template: TemplateView = templateView
                 template.setStyles(styles)
                 template.setNativeAd(ad)
             }
@@ -87,9 +87,9 @@ internal class AdmobNativeDelegate :
         this.adLoader = null
         this.callback = null
     }
-    override fun initSelf(): AdsInterface<ShowParam.SPAdmobNative> = this
+    override fun initSelf(): AdsInterface<AdMobShowParam.SPAdmobNative> = this
 
-    override fun show(param: ShowParam.SPAdmobNative) {
+    override fun show(param: AdMobShowParam.SPAdmobNative) {
         if (isAvailable() || adLoader == null || adLoader!!.isLoading) {
             param.showCallback?.onFailed()
             return
@@ -111,8 +111,8 @@ internal class AdmobNativeDelegate :
 
 class AdmobNative constructor(
     lifecycleOwner: LifecycleOwner?,
-    ad: Param.AdmobNative.IAdmobNative = AdmobNativeDelegate()
-) : Param.AdmobNative.IAdmobNative by ad,
+    ad: AdMobLoadParam.AdmobNative.IAdmobNative = AdmobNativeDelegate()
+) : AdMobLoadParam.AdmobNative.IAdmobNative by ad,
     DefaultLifecycleObserver by Life(lifecycleOwner, ad),
     IExpiration by Expiration(ad.base())
 {

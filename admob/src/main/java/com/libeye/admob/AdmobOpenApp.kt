@@ -5,21 +5,22 @@ import android.content.Context
 import android.os.Bundle
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import com.libeye.wireframe.wireframe.AdsInterface
-import com.libeye.wireframe.wireframe.BaseAds
-import com.libeye.wireframe.wireframe.Expiration
-import com.libeye.wireframe.wireframe.IExpiration
-import com.libeye.wireframe.wireframe.ShowCallback
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
-import com.libeye.wireframe.*
+import com.lib.eyes.wireframe.AdsInterface
+import com.lib.eyes.wireframe.BaseAds
+import com.lib.eyes.wireframe.Expiration
+import com.lib.eyes.wireframe.IExpiration
+import com.lib.eyes.wireframe.ShowCallback
+import com.libeye.admob.params.AdMobLoadParam
+import com.libeye.admob.params.AdMobShowParam
 
 class AdmobOpenApp(
     private val adId: String
-) : BaseAds<AppOpenAd, ShowParam.SPAdmobOpenApp>(), IAdmobOpenApp {
+) : BaseAds<AppOpenAd, AdMobShowParam.SPAdmobOpenApp>(), AdMobLoadParam.AdmobOpenApp.IAdmobOpenApp {
     private var currentActivity: Activity? = null
     private var isLoadingAd = false
     var isShowingAd = false
@@ -87,7 +88,7 @@ class AdmobOpenApp(
         }
     }
 
-    override fun show(param: ShowParam.SPAdmobOpenApp) {
+    override fun show(param: AdMobShowParam.SPAdmobOpenApp) {
         val (activity, onShowAdCompleteListener) = param
 
         // If the app open ad is already showing, do not show the ad again.
@@ -133,7 +134,7 @@ class AdmobOpenApp(
 
     /** Show the ad if one isn't already showing. */
     private fun showAdIfAvailable(activity: Activity) {
-        show(ShowParam.SPAdmobOpenApp(activity, object : ShowCallback {
+        show(AdMobShowParam.SPAdmobOpenApp(activity, object : ShowCallback {
             override fun onSuccess() {
                 //Back to activity
             }
@@ -144,13 +145,13 @@ class AdmobOpenApp(
         }))
     }
 
-    override fun initSelf(): AdsInterface<ShowParam.SPAdmobOpenApp> = this
+    override fun initSelf(): AdsInterface<AdMobShowParam.SPAdmobOpenApp> = this
 }
 
 class AdmobOpenAppAds(
     adId: String,
     ad: AdmobOpenApp = AdmobOpenApp(adId)
-) : IAdmobOpenApp by ad,
+) : AdMobLoadParam.AdmobOpenApp.IAdmobOpenApp by ad,
     IExpiration by Expiration(ad, 4) {
     init {
         ad.self = this

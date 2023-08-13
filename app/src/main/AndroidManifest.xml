@@ -12,9 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LibEyes"
         tools:targetApi="31"
-        android:name=".App">
+        android:name="com.libeye.libeyes.App">
         <activity
-            android:name=".MainActivity"
+            android:name="com.libeye.libeyes.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
