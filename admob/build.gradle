@@ -84,7 +84,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
-            manifestPlaceholders = ["appID": adsProperties.getProperty(key_APPID)]
+            def value = adsProperties.getProperty(key_APPID)
+            if (value != null) {
+                manifestPlaceholders = ["appID": value]
+            } else manifestPlaceholders = ["appID": Globals.id_app]
         }
 
         debug {
@@ -113,6 +116,12 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+        }
     }
 }
 

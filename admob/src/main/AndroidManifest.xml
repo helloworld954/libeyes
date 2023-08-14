@@ -4,10 +4,10 @@
     <uses-permission android:name="android.permission.INTERNET"
         tools:node="merge"/>
 
-    <application
-        tools:node="merge">
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="${appID}"/>
-    </application>
+<!--    <application-->
+<!--        tools:node="merge">-->
+<!--        <meta-data-->
+<!--            android:name="com.google.android.gms.ads.APPLICATION_ID"-->
+<!--            android:value="${appID}"/>-->
+<!--    </application>-->
 </manifest>

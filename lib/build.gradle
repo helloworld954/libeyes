@@ -46,6 +46,12 @@ android {
         viewBinding true
     }
 
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+        }
+    }
+
 //    lintOptions {
 //        resourcePrefix 'le_'
 //    }
