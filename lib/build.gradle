@@ -3,18 +3,6 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
-def adsProperties = new Properties()
-
-class Globals {
-    static String id_app = 'ca-app-pub-3940256099942544~3347511713'
-    static String id_native_test = "ca-app-pub-3940256099942544/2247696110"
-    static String id_banner_test = "ca-app-pub-3940256099942544/6300978111"
-    static String id_inter_test = "ca-app-pub-3940256099942544/1033173712"
-    static String id_reward_test = "ca-app-pub-3940256099942544/5224354917"
-}
-
-def key_APPID = "app.APP_ID"
-
 android {
     namespace 'com.lib.eyes'
     compileSdk 33
@@ -22,8 +10,6 @@ android {
     defaultConfig {
         minSdk 21
         targetSdk 33
-
-        manifestPlaceholders.testAppID = "ca-app-pub-3940256099942544~3347511713"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -36,21 +22,6 @@ android {
         }
     }
 
-    libraryVariants.all { variant ->
-        (adsProperties as Properties).each {
-            def key = it.key as String
-            // variant.buildType.name.equals("release")
-            def value = variant.name.contains("release")
-                    ? it.value : defaultWithType(key.substring(0, key.indexOf('.')))
-
-            if(key == key_APPID) {
-                variant.mergedFlavor.manifestPlaceholders.appID = value
-            } else {
-                variant.buildConfigField "String", "${(it.key as String).replaceAll("\\.", "_")}", "\"$value\""
-            }
-        }
-    }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -58,63 +29,24 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-}
-
-gradle.afterProject { project ->
-    project.task(dependsOn: createIfPossible) {
-        println("Create done ")
-    }
-}
-
-static String defaultWithType(String prefix) {
-    switch (prefix) {
-        case "native":
-            return Globals.id_native_test
-        case "banner":
-            return Globals.id_banner_test
-        case "inter":
-            return Globals.id_inter_test
-        case "reward":
-            return Globals.id_reward_test
-        case "app":
-            return Globals.id_app
+    buildFeatures {
+        viewBinding true
     }
 
-    return "___"
-}
-
-task createIfPossible {
-    File propsFile = new File(rootDir, "ads-id.properties")
-    if (!propsFile.exists()) {
-        assert propsFile.createNewFile()
-
-        Properties properties = new Properties();
-        properties.setProperty("native.test.id", Globals.id_native_test)
-        properties.setProperty("banner.test.id", Globals.id_banner_test)
-        properties.setProperty("inter.test.id", Globals.id_inter_test)
-        properties.setProperty("reward.test.id", Globals.id_reward_test)
-
-        propsFile.withWriterAppend { writer ->
-            writer.writeLine("# DO NOT MODIFY")
-            properties.forEach { key, value ->
-                writer.writeLine("$key=$value")
-            }
-            writer.writeLine("# ----------------")
-            writer.writeLine("$key_APPID=${Globals.id_app}")
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
         }
 
-        properties.clear()
-    }
-
-    adsProperties.clear()
-    propsFile.withInputStream {
-        adsProperties.load(it)
+        singleVariant('debug') {
+            withSourcesJar()
+            withJavadocJar()
+        }
     }
 }
 
 dependencies {
-    api project(":nativetemplates")
-
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
@@ -122,6 +54,14 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
-    //ads
-    api 'com.google.android.gms:play-services-ads:22.2.0'
+    //lifecycle
+    def lifecycle_version = "2.5.1"
+    api "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+    api "androidx.lifecycle:lifecycle-process:$lifecycle_version"
+    annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
+
+    //firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.2.0"))
+    implementation("com.google.firebase:firebase-analytics-ktx")
+
 }

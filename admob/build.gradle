@@ -1,0 +1,152 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+
+class Globals {
+    static String id_app = 'ca-app-pub-3940256099942544~3347511713'
+    static String id_native_test = "ca-app-pub-3940256099942544/2247696110"
+    static String id_banner_test = "ca-app-pub-3940256099942544/6300978111"
+    static String id_inter_test = "ca-app-pub-3940256099942544/1033173712"
+    static String id_reward_test = "ca-app-pub-3940256099942544/5224354917"
+    static String id_openApp_test = "ca-app-pub-3940256099942544/3419835294"
+}
+
+static String defaultWithType(String prefix) {
+    switch (prefix) {
+        case "native":
+            return Globals.id_native_test
+        case "banner":
+            return Globals.id_banner_test
+        case "inter":
+            return Globals.id_inter_test
+        case "reward":
+            return Globals.id_reward_test
+        case "openApp":
+            return Globals.id_openApp_test
+        case "app":
+            return Globals.id_app
+    }
+
+    return "___"
+}
+
+def key_APPID = "app.APP_ID"
+
+def adsProperties = new Properties()
+
+task libeyesInitial {
+    File propsFile = new File(rootDir, "ads-id.properties")
+    if (propsFile.exists()) {
+        adsProperties.clear()
+
+        propsFile.withInputStream {
+            adsProperties.load(it)
+        }
+    } else {
+        assert propsFile.createNewFile()
+
+        Properties properties = new Properties();
+
+        propsFile.withWriterAppend { writer ->
+            writer.writeLine("$key_APPID=${Globals.id_app}")
+        }
+
+        adsProperties = properties.clone()
+        properties.clear()
+    }
+}
+
+gradle.afterProject { project ->
+    project.task(dependsOn: libeyesInitial) {
+
+    }
+}
+
+tasks.register("libeye") {
+    dependsOn(libeyesInitial)
+}
+
+android {
+    namespace 'com.libeye.admob'
+    compileSdk 33
+
+    defaultConfig {
+        minSdk 21
+        targetSdk 33
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            def value = adsProperties.getProperty(key_APPID)
+            if (value != null) {
+                manifestPlaceholders = ["appID": value]
+            } else manifestPlaceholders = ["appID": Globals.id_app]
+        }
+
+        debug {
+            manifestPlaceholders = ["appID": Globals.id_app]
+        }
+    }
+
+    libraryVariants.all { variant ->
+        (adsProperties as Properties).each {
+            def key = it.key as String
+            // variant.buildType.name.equals("release")
+            def value = variant.name.contains("release")
+                    ? it.value : defaultWithType(key.substring(0, key.indexOf('.')))
+
+            if (key == key_APPID) {
+                variant.mergedFlavor.manifestPlaceholders = ["appID": value]
+            } else {
+                variant.buildConfigField "String", "${(it.key as String).replaceAll("\\.", "_")}", "\"$value\""
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+
+        singleVariant('debug') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+}
+
+dependencies {
+    implementation project(":lib")
+
+    implementation 'androidx.core:core-ktx:1.8.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.9.0'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+    //ads
+    implementation 'com.google.android.gms:play-services-ads:22.2.0'
+
+    //shimmer
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+
+    // google
+    implementation 'com.google.errorprone:error_prone_annotations:2.16'
+}
