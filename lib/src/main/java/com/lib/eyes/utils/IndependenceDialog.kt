@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
+import androidx.annotation.StyleRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDialog
 import androidx.appcompat.app.AppCompatDialogFragment
@@ -26,8 +27,9 @@ object IndependenceDialog {
         activity: FragmentActivity,
         inflater: Inflater<T>,
         cancelable: Boolean = true,
+        @StyleRes theme: Int = R.style.TranslucentDialog,
         inflateAction: (DialogInterface.(T) -> Unit)? = null
-    ): DialogFragment = CenterDialog(inflater, inflateAction, cancelable).apply {
+    ): DialogFragment = CenterDialog(inflater, inflateAction, cancelable, theme).apply {
         show(activity.supportFragmentManager, UUID.randomUUID().toString())
     }
 
@@ -35,8 +37,9 @@ object IndependenceDialog {
         activity: FragmentActivity,
         inflater: Inflater<T>,
         cancelable: Boolean = true,
+        @StyleRes theme: Int = R.style.TranslucentDialog,
         inflateAction: (DialogInterface.(T) -> Unit)? = null
-    ): DialogFragment = BottomSheet(inflater, inflateAction, cancelable).apply {
+    ): DialogFragment = BottomSheet(inflater, inflateAction, cancelable, theme).apply {
         show(activity.supportFragmentManager, UUID.randomUUID().toString())
     }
 
@@ -88,14 +91,15 @@ object IndependenceDialog {
 class CenterDialog<T : ViewBinding>(
     inflater: Inflater<T>,
     private val bindAction: (Dialog.(T) -> Unit)? = null,
-    private val cancelable: Boolean = true
+    private val cancelable: Boolean = true,
+    @StyleRes private val theme: Int = R.style.TranslucentDialog
 ) : AppCompatDialogFragment() {
     private val binding: T by lazy {
         inflater.invoke(layoutInflater, null, false)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = FullWidthAppCompatDialog(requireContext(), R.style.TranslucentDialog)
+        val dialog = FullWidthAppCompatDialog(requireContext(), theme)
 
         this.isCancelable = cancelable
 
@@ -109,14 +113,15 @@ class CenterDialog<T : ViewBinding>(
 class BottomSheet<T : ViewBinding>(
     inflater: Inflater<T>,
     private val bindAction: (Dialog.(T) -> Unit)? = null,
-    private val cancelable: Boolean = true
+    private val cancelable: Boolean = true,
+    @StyleRes private val theme: Int = R.style.TranslucentDialog
 ) : BottomSheetDialogFragment() {
     private val binding: T by lazy {
         inflater.invoke(layoutInflater, null, false)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), R.style.TranslucentDialog)
+        val dialog = BottomSheetDialog(requireContext(), theme)
 
         this.isCancelable = cancelable
 

@@ -28,25 +28,25 @@ subprojects {
     afterEvaluate {
         publishing {
             publications {
-                release(MavenPublication) {
-                    groupId project.group
-                    artifactId project.name
-                    version project.version
-
-                    afterEvaluate {
-                        from components.getByName('release')
-                    }
-                }
-
-                debug(MavenPublication) {
-                    groupId project.group
-                    artifactId project.name
-                    version project.version
-
-                    afterEvaluate {
-                        from components.getByName('debug')
-                    }
-                }
+//                release(MavenPublication) {
+//                    groupId project.group
+//                    artifactId project.name
+//                    version project.version
+//
+//                    afterEvaluate {
+//                        from components.getByName('release')
+//                    }
+//                }
+//
+//                debug(MavenPublication) {
+//                    groupId project.group
+//                    artifactId project.name
+//                    version project.version
+//
+//                    afterEvaluate {
+//                        from components.getByName('debug')
+//                    }
+//                }
             }
         }
     }

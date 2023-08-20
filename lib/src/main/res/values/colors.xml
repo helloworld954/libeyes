@@ -12,4 +12,6 @@
   <color name="gnt_outline">#E0E0E0</color>
 
   <color name="gnt_semi_transparent">#16000000</color>
+
+  <color name="grey">#F2F2F2</color>
 </resources>

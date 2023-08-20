@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="rate_us">Rate us</string>
+    <string name="rating_hint">Please let us know how can we improve ourselves?</string>
+    <string name="submit">Submit</string>
+    <string name="maybe_later">Maybe later</string>
+    <string name="thank_for_submit">Thank you for submitting a review</string>
+    <string name="done">Done</string>
+</resources>

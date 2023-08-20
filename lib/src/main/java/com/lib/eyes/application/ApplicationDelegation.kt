@@ -2,12 +2,14 @@ package com.lib.eyes.application
 
 import android.app.Application
 import android.content.res.Configuration
+import com.lib.eyes.utils.DataStore
 
 abstract class BaseApplication : Application() {
     private var appLifecycleCallbacks: MutableList<ApplicationLifecycleCallback> = mutableListOf()
 
     override fun onCreate() {
         super.onCreate()
+        DataStore.setup(this.applicationContext)
         appLifecycleCallbacks.forEach {
             it.onCreate()
         }

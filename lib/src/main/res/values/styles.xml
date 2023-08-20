@@ -7,4 +7,15 @@
     <style name="TranslucentDialog.Style" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
     </style>
+
+    <style name="LibRatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/rating_bar_progress</item>
+        <item name="android:minHeight">23dip</item>
+        <item name="android:maxHeight">25dip</item>
+    </style>
+
+    <style name="RateDialog" parent="TranslucentDialog">
+        <item name="mainColor">#DE421F</item>
+        <item name="mainTextColor">#000000</item>
+    </style>
 </resources>
