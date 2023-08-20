@@ -15,7 +15,10 @@
     </style>
 
     <style name="RateDialog" parent="TranslucentDialog">
-        <item name="mainColor">#DE421F</item>
-        <item name="mainTextColor">#000000</item>
+        <item name="colorSecondary">#DE421F</item>
+        <item name="itemTextColor">#000000</item>
+        <item name="colorAccent">@color/grey</item>
+        <item name="colorPrimary">@color/gnt_white</item>
+        <item name="hintTextColor">#777777</item>
     </style>
 </resources>

@@ -16,4 +16,3 @@ dependencyResolutionManagement {
 rootProject.name = "LibEyes"
 include ':lib'
 include ':admob'
-include ':myapplication'

@@ -7,8 +7,10 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import com.lib.eyes.Const
 import com.lib.eyes.R
+import com.lib.eyes.configs.GlobalConfig
 import com.lib.eyes.databinding.DialogLoadingBinding
 import com.lib.eyes.databinding.DialogRatingBinding
+import com.lib.eyes.openStore
 import com.lib.eyes.text
 import com.lib.eyes.utils.DataStore
 import com.lib.eyes.utils.FirebaseLog
@@ -47,6 +49,8 @@ object DialogFactory {
                         if (dialogBinding.imgThumb.isVisible) {
                             dismiss()
                         } else {
+                            fragmentActivity.openStore()
+
                             dialogBinding.tvMainLabel.setText(R.string.thank_for_submit)
                             dialogBinding.btnSubmit.setText(R.string.done)
 
@@ -64,7 +68,10 @@ object DialogFactory {
                     }
 
                     dialogBinding.ratingBar.setOnRatingChangeListener { _, rating, _ ->
-                        dialogBinding.btnSubmit.isEnabled = rating > 0
+                        dialogBinding.btnSubmit.apply {
+                            isEnabled = rating > 0
+                            alpha = if(isEnabled) 1f else 0.2f
+                        }
                     }
                 }
             } else {

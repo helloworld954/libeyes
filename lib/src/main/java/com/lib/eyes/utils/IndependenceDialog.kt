@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.annotation.StyleRes
@@ -89,46 +90,64 @@ object IndependenceDialog {
 
 
 class CenterDialog<T : ViewBinding>(
-    inflater: Inflater<T>,
+    private val inflater: Inflater<T>,
     private val bindAction: (Dialog.(T) -> Unit)? = null,
     private val cancelable: Boolean = true,
     @StyleRes private val theme: Int = R.style.TranslucentDialog
 ) : AppCompatDialogFragment() {
-    private val binding: T by lazy {
-        inflater.invoke(layoutInflater, null, false)
+    private lateinit var binding: T
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = this.inflater.invoke(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        this.isCancelable = cancelable
+        dialog?.let {
+            bindAction?.invoke(it, binding)
+        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = FullWidthAppCompatDialog(requireContext(), theme)
-
-        this.isCancelable = cancelable
-
-        dialog.setContentView(binding.root)
-        bindAction?.invoke(dialog, binding)
-
-        return dialog
+        return FullWidthAppCompatDialog(requireContext(), theme)
     }
 }
 
 class BottomSheet<T : ViewBinding>(
-    inflater: Inflater<T>,
+    private val inflater: Inflater<T>,
     private val bindAction: (Dialog.(T) -> Unit)? = null,
     private val cancelable: Boolean = true,
     @StyleRes private val theme: Int = R.style.TranslucentDialog
 ) : BottomSheetDialogFragment() {
-    private val binding: T by lazy {
-        inflater.invoke(layoutInflater, null, false)
+    private lateinit var binding: T
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = this.inflater.invoke(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        this.isCancelable = cancelable
+        dialog?.let {
+            bindAction?.invoke(it, binding)
+        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-
-        this.isCancelable = cancelable
-
-        dialog.setContentView(binding.root)
-        bindAction?.invoke(dialog, binding)
-
-        return dialog
+        return BottomSheetDialog(requireContext(), theme)
     }
 }
 

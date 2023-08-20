@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="RateDialog">
-        <attr name="mainFont" format="reference" />
-        <attr name="mainColor" format="color"/>
-        <attr name="mainTextColor" format="color"/>
-    </declare-styleable>
+
 </resources>
