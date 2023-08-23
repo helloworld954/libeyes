@@ -14,7 +14,7 @@ plugins {
 }
 
 ext {
-    libVersion = "master-SNAPSHOT"
+    libVersion = "master-SNAPSHOT-2"
 }
 
 allprojects {

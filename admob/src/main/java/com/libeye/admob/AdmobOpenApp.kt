@@ -148,7 +148,7 @@ class AdmobOpenApp(
     override fun initSelf(): AdsInterface<AdMobShowParam.SPAdmobOpenApp> = this
 }
 
-class AdmobOpenAppAds(
+internal class AdmobOpenAppAds(
     adId: String,
     ad: AdmobOpenApp = AdmobOpenApp(adId)
 ) : AdMobLoadParam.AdmobOpenApp.IAdmobOpenApp by ad,

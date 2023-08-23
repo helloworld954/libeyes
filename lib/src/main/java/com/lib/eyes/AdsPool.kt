@@ -49,12 +49,12 @@ object AdsPool {
      * This function is used for loading then show loaded ads without cache
      *
      * @param sp show-param is used for show ad [ShowParam]
-     * @param fragmentActivity is needed for showing dialog with [AdmobShowParam.SPAdmobInterstitial]
+     * @param fragmentActivityAndColor is needed for showing dialog with [AdmobShowParam.SPAdmobInterstitial]
      */
     fun loadAndShowImmediately(
         lp: LoadParam,
         sp: ShowParam,
-        fragmentActivity: FragmentActivity? = null
+        fragmentActivityAndColor: Pair<FragmentActivity, Int?>? = null,
     ) {
         lp.loadCallback?.let { callback ->
             var ad: AdsInterface<ShowParam>? = null
@@ -76,9 +76,10 @@ object AdsPool {
                 }
             }
 
-            if (lp.tag == LoadParam.TAG.INTER && fragmentActivity != null) {
+            if (lp.tag == LoadParam.TAG.INTER && fragmentActivityAndColor?.first != null) {
                 dialog = DialogFactory.createLoadingDialog(
-                    fragmentActivity
+                    fragmentActivityAndColor.first,
+                    fragmentActivityAndColor.second
                 )
             }
 

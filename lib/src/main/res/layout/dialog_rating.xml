@@ -152,11 +152,11 @@
             android:layout_height="wrap_content"
 
             android:text="@string/maybe_later"
-            android:textSize="15sp"
+            android:textSize="18sp"
             android:textColor="?itemTextColor"
             android:textStyle="bold"
 
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="13dp"
 
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
