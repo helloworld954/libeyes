@@ -14,7 +14,7 @@ plugins {
 }
 
 ext {
-    libVersion = "master-SNAPSHOT-2"
+    libVersion = "1.0.1"
 }
 
 allprojects {
@@ -22,29 +22,32 @@ allprojects {
     version = "${rootProject.ext.libVersion}"
 }
 
+def ignoreBuildModules = ['app']
 subprojects {
-    apply plugin: 'maven-publish'
+    if (!ignoreBuildModules.contains(project.name)) {
+        apply plugin: 'maven-publish'
 
-    afterEvaluate {
-        publishing {
-            publications {
-                release(MavenPublication) {
-                    groupId project.group
-                    artifactId project.name
-                    version project.version
+        afterEvaluate {
+            publishing {
+                publications {
+                    release(MavenPublication) {
+                        groupId project.group
+                        artifactId project.name
+                        version project.version
 
-                    afterEvaluate {
-                        from components.getByName('release')
+                        afterEvaluate {
+                            from components.getByName('release')
+                        }
                     }
-                }
 
-                debug(MavenPublication) {
-                    groupId project.group
-                    artifactId project.name
-                    version project.version
+                    debug(MavenPublication) {
+                        groupId project.group
+                        artifactId project.name
+                        version project.version
 
-                    afterEvaluate {
-                        from components.getByName('debug')
+                        afterEvaluate {
+                            from components.getByName('debug')
+                        }
                     }
                 }
             }

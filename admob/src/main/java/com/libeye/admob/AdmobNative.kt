@@ -24,7 +24,7 @@ import com.libeye.admob.params.AdMobShowParam
 import com.libeye.admob.templates.NativeTemplateStyle
 import com.libeye.admob.templates.TemplateView
 
-internal class AdmobNativeDelegate :
+internal class AdmobNativeDelegate(override val adId: String) :
     BaseAds<NativeAd, AdMobShowParam.SPAdmobNative>(),
     AdMobLoadParam.AdmobNative.IAdmobNative
 {
@@ -34,11 +34,10 @@ internal class AdmobNativeDelegate :
     override fun config(
         context: Context,
         templateView: TemplateView,
-        nativeId: String
     ): AdMobLoadParam.AdmobNative.IAdmobNative {
         if (adLoader != null) return this
 
-        this.adLoader = AdLoader.Builder(context, nativeId)
+        this.adLoader = AdLoader.Builder(context, adId)
             .forNativeAd { ad: NativeAd ->
                 if (context is Activity && context.isDestroyed) {
                     ad.destroy()
@@ -109,9 +108,10 @@ internal class AdmobNativeDelegate :
     }
 }
 
-class AdmobNative constructor(
+internal class AdmobNative constructor(
+    adId: String,
     lifecycleOwner: LifecycleOwner?,
-    ad: AdMobLoadParam.AdmobNative.IAdmobNative = AdmobNativeDelegate()
+    ad: AdMobLoadParam.AdmobNative.IAdmobNative = AdmobNativeDelegate(adId)
 ) : AdMobLoadParam.AdmobNative.IAdmobNative by ad,
     DefaultLifecycleObserver by Life(lifecycleOwner, ad),
     IExpiration by Expiration(ad.base())

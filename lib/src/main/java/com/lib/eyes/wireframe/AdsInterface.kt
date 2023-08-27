@@ -1,6 +1,5 @@
 package com.lib.eyes.wireframe
 
-import com.lib.eyes.LoadParam
 import com.lib.eyes.ShowParam
 
 interface AdsInterface<T: ShowParam> {
@@ -11,7 +10,7 @@ interface AdsInterface<T: ShowParam> {
 interface ShowCallback {
     fun onSuccess()
 
-    fun onClosed() {}
+    fun onClosed(ad: AdsInterface<*>) {}
 
     fun onClicked() {}
 

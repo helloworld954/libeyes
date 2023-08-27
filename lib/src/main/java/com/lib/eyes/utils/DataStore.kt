@@ -6,8 +6,10 @@ import android.content.SharedPreferences
 object DataStore {
     private lateinit var preferences: SharedPreferences
 
-    fun setup(context: Context) {
-        preferences = context.getSharedPreferences(LOCAL_DATA, Context.MODE_PRIVATE)
+    infix fun setup(context: Context) {
+        if (::preferences.isInitialized.not()) {
+            preferences = context.getSharedPreferences(LOCAL_DATA, Context.MODE_PRIVATE)
+        }
     }
 
     fun <T> get(key: String, defaultValue: T): T = preferences.get(key, defaultValue)

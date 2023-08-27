@@ -1,6 +1,10 @@
 <resources>
   <declare-styleable name="TemplateView">
-    <attr name="gnt_template_type" format="reference"/>
+
+    <attr name="gnt_template_type" format="enum">
+      <enum name="medium" value="0"/>
+      <enum name="small" value="1"/>
+    </attr>
   </declare-styleable>
 
   <declare-styleable name="BannerView">

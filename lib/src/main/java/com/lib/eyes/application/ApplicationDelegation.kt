@@ -9,7 +9,6 @@ abstract class BaseApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        DataStore.setup(this.applicationContext)
         appLifecycleCallbacks.forEach {
             it.onCreate()
         }

@@ -18,7 +18,7 @@ import com.lib.eyes.wireframe.Timeout
 import com.libeye.admob.params.AdMobLoadParam
 import com.libeye.admob.params.AdMobShowParam
 
-internal class AdmobInterstitialDelegate :
+internal class AdmobInterstitialDelegate(override val adId: String) :
     BaseAds<InterstitialAd, AdMobShowParam.SPAdmobInterstitial>(),
     AdMobLoadParam.AdmobInterstitial.IAdmobInterstitial
 {
@@ -31,7 +31,6 @@ internal class AdmobInterstitialDelegate :
 
     override fun load(
         context: Context,
-        interId: String,
         loadCallback: LoadCallback?
     ): AdMobLoadParam.AdmobInterstitial.IAdmobInterstitial {
         if (isAvailable() || isLoading) return this
@@ -40,7 +39,7 @@ internal class AdmobInterstitialDelegate :
         this.loadCallback = loadCallback
         val adRequest = AdRequest.Builder().build()
 
-        InterstitialAd.load(context, interId, adRequest, object : InterstitialAdLoadCallback() {
+        InterstitialAd.load(context, adId, adRequest, object : InterstitialAdLoadCallback() {
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 this@AdmobInterstitialDelegate.release()
                 this@AdmobInterstitialDelegate.isLoading = false
@@ -55,6 +54,11 @@ internal class AdmobInterstitialDelegate :
             }
         })
 
+        return this
+    }
+
+    override fun reload(context: Context): AdMobLoadParam.AdmobInterstitial.IAdmobInterstitial {
+        load(context, loadCallback)
         return this
     }
 
@@ -88,7 +92,7 @@ internal class AdmobInterstitialDelegate :
         override fun onAdDismissedFullScreenContent() {
             isShowing = false
             release()
-            callback?.onClosed()
+            callback?.onClosed(this@AdmobInterstitialDelegate)
             callback = null
         }
 
@@ -103,8 +107,9 @@ internal class AdmobInterstitialDelegate :
     }
 }
 
-class AdmobInterstitial constructor(
-    private val ads: AdMobLoadParam.AdmobInterstitial.IAdmobInterstitial = AdmobInterstitialDelegate(),
+internal class AdmobInterstitial constructor(
+    adId: String,
+    private val ads: AdMobLoadParam.AdmobInterstitial.IAdmobInterstitial = AdmobInterstitialDelegate(adId),
     timeout: Long? = null
 ) : AdMobLoadParam.AdmobInterstitial.IAdmobInterstitial by ads,
     ISeparateShow<AdMobShowParam.SPAdmobInterstitial> by SeparateShow(ads),
@@ -116,10 +121,9 @@ class AdmobInterstitial constructor(
 
     override fun load(
         context: Context,
-        interId: String,
         loadCallback: LoadCallback?
     ): AdMobLoadParam.AdmobInterstitial.IAdmobInterstitial = apply {
         startTimeout()
-        ads.load(context, interId, loadCallback)
+        ads.load(context, loadCallback)
     }
 }

@@ -38,6 +38,8 @@ object DialogFactory {
         @StyleRes theme: Int = R.style.RateDialog,
         config: RatingDialogConfig = RatingDialogConfig()
     ) : DialogFragment? {
+        DataStore setup fragmentActivity
+
         return DataStore.get(
             FIRST_RATE, false
         ).let { isRated ->

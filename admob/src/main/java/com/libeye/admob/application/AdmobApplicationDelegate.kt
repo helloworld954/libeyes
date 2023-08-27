@@ -4,10 +4,12 @@ import android.app.Application
 import android.content.res.Configuration
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
+import com.lib.eyes.AdsPool
 import com.lib.eyes.application.BaseApplication
+import com.libeye.admob.registerOpenAppAd
 
 class AdmobApplicationDelegate (
-    private val application: Application,
+    private val application: BaseApplication,
     private val listTestDevice: List<String> = listOf()
 ): BaseApplication.ApplicationLifecycleCallback {
     override fun onCreate() {
@@ -28,5 +30,11 @@ class AdmobApplicationDelegate (
     }
 
     override fun onTrimMemory(level: Int) {
+    }
+
+    fun registerOpenAds(adId: String) {
+        AdsPool.registerOpenAppAd(
+            application, adId
+        )
     }
 }

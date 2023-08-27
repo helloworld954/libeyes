@@ -8,20 +8,25 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 object GlobalConfig : CoroutineScope {
-    var SHOW_SEPARATE_TIME = 5
-    lateinit var PACKAGE_NAME: String
+    val SHOW_SEPARATE_TIME: Int
+        get() = data.showSeparateTime
+
+    val PACKAGE_NAME: String
+        get() = data.packageName
+
+    var data: ConfigModel = ConfigModel(
+        5, ""
+    )
 
     fun applyConfig(context: Context) {
         this.launch {
             val configModel = getConfig(context.applicationContext)
 
-            SHOW_SEPARATE_TIME = configModel.showSeparateTime
-            PACKAGE_NAME = configModel.packageName
+            data = configModel
         }
     }
 
     private suspend fun getConfig(context: Context): ConfigModel {
-        delay(5000)
         return ConfigModel(
             showSeparateTime = 5,
             packageName = context.applicationContext.packageName

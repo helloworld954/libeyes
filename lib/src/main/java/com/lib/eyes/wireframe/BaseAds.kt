@@ -8,6 +8,8 @@ abstract class BaseAds<T, SP: ShowParam>:
     SingleHolder<T> by Holder(),
     Self<AdsInterface<SP>>
 {
+    protected abstract val adId: String
+
     private var _loadCallback: LoadCallback? = null
     var loadCallback: LoadCallback?
         get() = _loadCallback

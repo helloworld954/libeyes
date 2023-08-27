@@ -28,15 +28,18 @@ sealed class AdMobLoadParam : LoadParam {
         override val tag: LoadParam.TAG = LoadParam.TAG.INTER
 
         interface IAdmobInterstitial : AdsInterface<AdMobShowParam.SPAdmobInterstitial> {
-            fun load(context: Context, interId: String, loadCallback: LoadCallback?): IAdmobInterstitial
+            fun load(context: Context, loadCallback: LoadCallback?): IAdmobInterstitial
+
+            fun reload(context: Context): IAdmobInterstitial
         }
 
         override fun <T : ShowParam> createAd(): AdsInterface<T> {
             return com.libeye.admob.AdmobInterstitial(
+                adId = interId,
                 timeout = timeout
             ).apply {
                 separateTime?.let { setSeparateTime(it) }
-                load(context, interId, loadCallback)
+                load(context, loadCallback)
             } as AdsInterface<T>
         }
     }
@@ -50,14 +53,15 @@ sealed class AdMobLoadParam : LoadParam {
         override val tag: LoadParam.TAG = LoadParam.TAG.NATIVE
 
         interface IAdmobNative : AdsInterface<AdMobShowParam.SPAdmobNative> {
-            fun config(context: Context, templateView: TemplateView, nativeId: String): IAdmobNative
+            fun config(context: Context, templateView: TemplateView): IAdmobNative
         }
 
         override fun <T : ShowParam> createAd(): AdsInterface<T> {
             return com.libeye.admob.AdmobNative(
+                adId = nativeId,
                 lifecycleOwner = lifecycleOwner
             ).apply {
-                config(context, templateView, nativeId)
+                config(context, templateView)
             } as AdsInterface<T>
         }
     }

@@ -11,11 +11,13 @@ import com.libeye.admob.params.AdMobLoadParam
 import com.libeye.admob.params.AdMobShowParam
 import com.libeye.admob.templates.BannerView
 
-internal class AdmobBannerDelegate : BaseAds<AdView, AdMobShowParam.SPAdmobBanner>(),
+internal class AdmobBannerDelegate :
+    BaseAds<AdView, AdMobShowParam.SPAdmobBanner>(),
     AdMobLoadParam.AdmobBanner.IAdmobBanner {
     override fun show(param: AdMobShowParam.SPAdmobBanner) {
         val (container, adId, callback, loadCallback) = param
 
+        _adId = adId
         this.loadCallback = loadCallback
 
         val adRequest = AdRequest.Builder().build()
@@ -25,7 +27,7 @@ internal class AdmobBannerDelegate : BaseAds<AdView, AdMobShowParam.SPAdmobBanne
         adView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
         adView.adListener = object : AdListener() {
             override fun onAdClosed() {
-                callback?.onClosed()
+                callback?.onClosed(this@AdmobBannerDelegate)
             }
 
             override fun onAdFailedToLoad(adError: LoadAdError) {
@@ -52,9 +54,13 @@ internal class AdmobBannerDelegate : BaseAds<AdView, AdMobShowParam.SPAdmobBanne
         release()
     }
 
+    private var _adId: String = ""
+    override val adId: String
+        get() = _adId
+
     override fun initSelf(): AdsInterface<AdMobShowParam.SPAdmobBanner> = this
 }
 
-class AdmobBanner constructor(
+internal class AdmobBanner constructor(
     ads: AdMobLoadParam.AdmobBanner.IAdmobBanner = AdmobBannerDelegate()
 ) : AdMobLoadParam.AdmobBanner.IAdmobBanner by ads

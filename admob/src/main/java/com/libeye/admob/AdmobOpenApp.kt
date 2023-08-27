@@ -18,8 +18,8 @@ import com.lib.eyes.wireframe.ShowCallback
 import com.libeye.admob.params.AdMobLoadParam
 import com.libeye.admob.params.AdMobShowParam
 
-class AdmobOpenApp(
-    private val adId: String
+internal class AdmobOpenApp(
+    override val adId: String
 ) : BaseAds<AppOpenAd, AdMobShowParam.SPAdmobOpenApp>(), AdMobLoadParam.AdmobOpenApp.IAdmobOpenApp {
     private var currentActivity: Activity? = null
     private var isLoadingAd = false
