@@ -39,6 +39,8 @@ object AdsPool {
             pool[tag]?.show(param) ?: kotlin.run {
                 param.showCallback?.onFailed()
             }
+        } else {
+            param.showCallback?.onFailed()
         }
     }
 
@@ -50,6 +52,8 @@ object AdsPool {
                     (it as ISeparateShow<ShowParam>).showSeparate(param)
                 }
             }
+        } else {
+            param.showCallback?.onFailed()
         }
     }
 
@@ -65,37 +69,36 @@ object AdsPool {
         fragmentActivityAndColor: Pair<FragmentActivity, Int?>? = null,
     ) {
         if (GlobalConfig.data.enableAds) {
-            lp.loadCallback?.let { callback ->
-                var ad: AdsInterface<ShowParam>? = null
-                var dialog: DialogFragment? = null
+            val paramCallback = lp.loadCallback
+            var ad: AdsInterface<ShowParam>? = null
+            var dialog: DialogFragment? = null
 
-                lp.loadCallback = object : LoadCallback {
-                    override fun loadSuccess() {
-                        callback.loadSuccess()
-                        ad?.show(sp)
+            lp.loadCallback = object : LoadCallback {
+                override fun loadSuccess() {
+                    paramCallback?.loadSuccess()
+                    ad?.show(sp)
 
-                        dialog?.dismiss()
-                    }
-
-                    override fun loadFailed() {
-                        callback.loadFailed()
-                        sp.showCallback?.onFailed()
-
-                        dialog?.dismiss()
-                    }
+                    dialog?.dismiss()
                 }
 
-                if (lp.tag == LoadParam.TAG.INTER && fragmentActivityAndColor?.first != null) {
-                    dialog = DialogFactory.createLoadingDialog(
-                        fragmentActivityAndColor.first,
-                        fragmentActivityAndColor.second
-                    )
-                }
+                override fun loadFailed() {
+                    paramCallback?.loadFailed()
+                    sp.showCallback?.onFailed()
 
-                ad = lp.createAd()
-            } ?: run {
-                lp.createAd<ShowParam>().show(sp)
+                    dialog?.dismiss()
+                }
             }
+
+            if (lp.tag == LoadParam.TAG.INTER && fragmentActivityAndColor?.first != null) {
+                dialog = DialogFactory.createLoadingDialog(
+                    fragmentActivityAndColor.first,
+                    fragmentActivityAndColor.second
+                )
+            }
+
+            ad = lp.createAd()
+        } else {
+            sp.showCallback?.onFailed()
         }
     }
 }

@@ -16,6 +16,10 @@ object DataStore {
 
     fun <T> put(key: String, value: T) = preferences.put(key, value)
 
+    fun clear() {
+        preferences.edit().clear().apply()
+    }
+
     private const val LOCAL_DATA = "__local_data"
 }
 
