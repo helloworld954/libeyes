@@ -11,6 +11,7 @@ import com.lib.eyes.wireframe.ShowCallback
 import com.libeye.admob.BuildConfig
 import com.libeye.admob.params.AdMobLoadParam
 import com.libeye.admob.params.AdMobShowParam
+import com.libeye.admob.reload
 import com.libeye.admob.templates.BannerView
 import com.libeye.admob.templates.TemplateView
 
@@ -85,7 +86,7 @@ class MainActivity : AppCompatActivity() {
 
         // Inter preload and show
         val load = {
-            AdsPool.prepareAd<AdMobShowParam.SPAdmobInterstitial>(
+            AdsPool.prepareAd(
                 tag = "inter_main",
                 loadParam = AdMobLoadParam.AdmobInterstitial(
                     context = this,
@@ -113,7 +114,7 @@ class MainActivity : AppCompatActivity() {
 //                        load.invoke()
 
                             //or
-                            (ad as AdMobLoadParam.AdmobInterstitial.IAdmobInterstitial).reload(this@MainActivity)
+                            AdsPool.reload(this@MainActivity, ad)
                         }
                     }
                 )

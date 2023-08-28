@@ -17,6 +17,8 @@ import com.lib.eyes.wireframe.ShowCallback
 import com.lib.eyes.wireframe.Timeout
 import com.libeye.admob.params.AdMobLoadParam
 import com.libeye.admob.params.AdMobShowParam
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 internal class AdmobInterstitialDelegate(override val adId: String) :
     BaseAds<InterstitialAd, AdMobShowParam.SPAdmobInterstitial>(),
@@ -29,11 +31,14 @@ internal class AdmobInterstitialDelegate(override val adId: String) :
         AdmobInterstitialCallback()
     }
 
-    override fun load(
+    override suspend fun load(
         context: Context,
         loadCallback: LoadCallback?
-    ): AdMobLoadParam.AdmobInterstitial.IAdmobInterstitial {
-        if (isAvailable() || isLoading) return this
+    ): AdMobLoadParam.AdmobInterstitial.IAdmobInterstitial = suspendCoroutine {
+        if (isAvailable() || isLoading) {
+            it.resume(this)
+            return@suspendCoroutine
+        }
 
         isLoading = true
         this.loadCallback = loadCallback
@@ -44,6 +49,8 @@ internal class AdmobInterstitialDelegate(override val adId: String) :
                 this@AdmobInterstitialDelegate.release()
                 this@AdmobInterstitialDelegate.isLoading = false
                 this@AdmobInterstitialDelegate.loadFailed()
+
+                it.resume(this@AdmobInterstitialDelegate)
             }
 
             override fun onAdLoaded(interstitialAd: InterstitialAd) {
@@ -51,15 +58,14 @@ internal class AdmobInterstitialDelegate(override val adId: String) :
                 this@AdmobInterstitialDelegate.hold(interstitialAd)
                 this@AdmobInterstitialDelegate.isLoading = false
                 this@AdmobInterstitialDelegate.loadSuccess()
+
+                it.resume(this@AdmobInterstitialDelegate)
             }
         })
-
-        return this
     }
 
-    override fun reload(context: Context): AdMobLoadParam.AdmobInterstitial.IAdmobInterstitial {
-        load(context, loadCallback)
-        return this
+    override suspend fun reload(context: Context): AdMobLoadParam.AdmobInterstitial.IAdmobInterstitial {
+        return load(context, loadCallback)
     }
 
     override fun show(param: AdMobShowParam.SPAdmobInterstitial) {
@@ -119,7 +125,7 @@ internal class AdmobInterstitial constructor(
         ads.base().self = this
     }
 
-    override fun load(
+    override suspend fun load(
         context: Context,
         loadCallback: LoadCallback?
     ): AdMobLoadParam.AdmobInterstitial.IAdmobInterstitial = apply {

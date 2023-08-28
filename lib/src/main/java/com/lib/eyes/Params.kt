@@ -3,6 +3,8 @@ package com.lib.eyes
 import com.lib.eyes.wireframe.AdsInterface
 import com.lib.eyes.wireframe.LoadCallback
 import com.lib.eyes.wireframe.ShowCallback
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
 interface ShowParam {
     val showCallback: ShowCallback?
@@ -18,8 +20,9 @@ interface ShowParam {
 interface LoadParam {
     var loadCallback: LoadCallback?
     val tag: LoadParam.TAG
+    var coroutineScope: CoroutineScope?
 
-    fun <T: ShowParam> createAd(): AdsInterface<T>
+    suspend fun <T: ShowParam> createAd(): AdsInterface<T>
 
     enum class TAG {
         INTER,

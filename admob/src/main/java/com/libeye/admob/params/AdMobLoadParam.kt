@@ -9,9 +9,15 @@ import com.lib.eyes.ShowParam
 import com.lib.eyes.wireframe.AdsInterface
 import com.lib.eyes.wireframe.LoadCallback
 import com.libeye.admob.templates.TemplateView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 sealed class AdMobLoadParam : LoadParam {
     override var loadCallback: LoadCallback? = null
+    override var coroutineScope: CoroutineScope? = null
 
     data class AdmobInterstitial(
         val context: Context,
@@ -28,19 +34,21 @@ sealed class AdMobLoadParam : LoadParam {
         override val tag: LoadParam.TAG = LoadParam.TAG.INTER
 
         interface IAdmobInterstitial : AdsInterface<AdMobShowParam.SPAdmobInterstitial> {
-            fun load(context: Context, loadCallback: LoadCallback?): IAdmobInterstitial
+            suspend fun load(context: Context, loadCallback: LoadCallback?): IAdmobInterstitial
 
-            fun reload(context: Context): IAdmobInterstitial
+            suspend fun reload(context: Context): IAdmobInterstitial
         }
 
-        override fun <T : ShowParam> createAd(): AdsInterface<T> {
-            return com.libeye.admob.AdmobInterstitial(
-                adId = interId,
-                timeout = timeout
-            ).apply {
-                separateTime?.let { setSeparateTime(it) }
-                load(context, loadCallback)
-            } as AdsInterface<T>
+        override suspend fun <T : ShowParam> createAd(): AdsInterface<T> = suspendCoroutine {
+            coroutineScope?.launch {
+                it.resume(com.libeye.admob.AdmobInterstitial(
+                    adId = interId,
+                    timeout = timeout
+                ).apply {
+                    separateTime?.let { time -> setSeparateTime(time) }
+                    load(context, loadCallback)
+                } as AdsInterface<T>)
+            }
         }
     }
 
@@ -56,13 +64,13 @@ sealed class AdMobLoadParam : LoadParam {
             fun config(context: Context, templateView: TemplateView): IAdmobNative
         }
 
-        override fun <T : ShowParam> createAd(): AdsInterface<T> {
-            return com.libeye.admob.AdmobNative(
+        override suspend fun <T : ShowParam> createAd(): AdsInterface<T> = suspendCoroutine {
+            it.resume(com.libeye.admob.AdmobNative(
                 adId = nativeId,
                 lifecycleOwner = lifecycleOwner
             ).apply {
                 config(context, templateView)
-            } as AdsInterface<T>
+            } as AdsInterface<T>)
         }
     }
 
@@ -71,8 +79,8 @@ sealed class AdMobLoadParam : LoadParam {
 
         interface IAdmobBanner : AdsInterface<AdMobShowParam.SPAdmobBanner>
 
-        override fun <T : ShowParam> createAd(): AdsInterface<T> {
-            return com.libeye.admob.AdmobBanner() as AdsInterface<T>
+        override suspend fun <T : ShowParam> createAd(): AdsInterface<T> = suspendCoroutine {
+            it.resume(com.libeye.admob.AdmobBanner() as AdsInterface<T>)
         }
     }
 
@@ -84,8 +92,8 @@ sealed class AdMobLoadParam : LoadParam {
         interface IAdmobOpenApp : Application.ActivityLifecycleCallbacks, LifecycleEventObserver,
             AdsInterface<AdMobShowParam.SPAdmobOpenApp>
 
-        override fun <T : ShowParam> createAd(): AdsInterface<T> {
-            return com.libeye.admob.AdmobOpenApp(adId = openAdId) as AdsInterface<T>
+        override suspend fun <T : ShowParam> createAd(): AdsInterface<T> = suspendCoroutine {
+            it.resume(com.libeye.admob.AdmobOpenApp(adId = openAdId) as AdsInterface<T>)
         }
     }
 }

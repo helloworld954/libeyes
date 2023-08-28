@@ -1,5 +1,6 @@
 package com.lib.eyes
 
+import android.content.Context
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import com.lib.eyes.configs.GlobalConfig
@@ -9,8 +10,12 @@ import com.lib.eyes.wireframe.AdsInterface
 import com.lib.eyes.wireframe.AdsStub
 import com.lib.eyes.wireframe.ISeparateShow
 import com.lib.eyes.wireframe.LoadCallback
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
-object AdsPool {
+object AdsPool : CoroutineScope {
     private val pool: HashMap<String, AdsInterface<ShowParam>> = hashMapOf()
 
     /**
@@ -19,16 +24,14 @@ object AdsPool {
      * Generic must be `Param.<type>.<interface>`
      * @sample [LoadParam.AdmobInterstitial.IAdmobInterstitial]
      */
-    fun <T: ShowParam> prepareAd(tag: String, loadParam: LoadParam): AdsInterface<T> {
-        return if (GlobalConfig.data.enableAds) {
-            pool[tag] ?: kotlin.run {
-                loadParam.createAd<ShowParam>().also {
-                    pool[tag] = it
-                }
+    fun prepareAd(tag: String, loadParam: LoadParam) {
+        if (GlobalConfig.data.enableAds) {
+            launch {
+                pool[tag] = loadParam.apply { coroutineScope = this@launch }.createAd()
             }
         } else {
             AdsStub()
-        } as AdsInterface<T>
+        }
     }
 
     /**
@@ -69,37 +72,38 @@ object AdsPool {
         fragmentActivityAndColor: Pair<FragmentActivity, Int?>? = null,
     ) {
         if (GlobalConfig.data.enableAds) {
-            val paramCallback = lp.loadCallback
-            var ad: AdsInterface<ShowParam>? = null
-            var dialog: DialogFragment? = null
+            launch {
+                lp.coroutineScope = this
+                val paramCallback = lp.loadCallback
+                var dialog: DialogFragment? = null
 
-            lp.loadCallback = object : LoadCallback {
-                override fun loadSuccess() {
-                    paramCallback?.loadSuccess()
-                    ad?.show(sp)
+                lp.loadCallback = object : LoadCallback {
+                    override fun loadSuccess() {
+                        paramCallback?.loadSuccess()
+                        dialog?.dismiss()
+                    }
 
-                    dialog?.dismiss()
+                    override fun loadFailed() {
+                        paramCallback?.loadFailed()
+                        dialog?.dismiss()
+                    }
                 }
 
-                override fun loadFailed() {
-                    paramCallback?.loadFailed()
-                    sp.showCallback?.onFailed()
-
-                    dialog?.dismiss()
+                if (lp.tag == LoadParam.TAG.INTER && fragmentActivityAndColor?.first != null) {
+                    dialog = DialogFactory.createLoadingDialog(
+                        fragmentActivityAndColor.first,
+                        fragmentActivityAndColor.second
+                    )
                 }
-            }
 
-            if (lp.tag == LoadParam.TAG.INTER && fragmentActivityAndColor?.first != null) {
-                dialog = DialogFactory.createLoadingDialog(
-                    fragmentActivityAndColor.first,
-                    fragmentActivityAndColor.second
-                )
+                lp.createAd<ShowParam>().show(sp)
             }
-
-            ad = lp.createAd()
         } else {
             sp.showCallback?.onFailed()
         }
     }
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main
 }
 
