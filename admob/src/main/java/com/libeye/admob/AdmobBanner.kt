@@ -14,7 +14,7 @@ import com.libeye.admob.templates.BannerView
 internal class AdmobBannerDelegate :
     BaseAds<AdView, AdMobShowParam.SPAdmobBanner>(),
     AdMobLoadParam.AdmobBanner.IAdmobBanner {
-    override fun show(param: AdMobShowParam.SPAdmobBanner) {
+    override suspend fun show(param: AdMobShowParam.SPAdmobBanner) {
         val (container, adId, callback, loadCallback) = param
 
         _adId = adId

@@ -5,7 +5,7 @@ import com.lib.eyes.ShowParam
 class AdsStubParam(override val showCallback: ShowCallback?) : ShowParam
 
 class AdsStub : AdsInterface<AdsStubParam> {
-    override fun show(param: AdsStubParam) {
+    override suspend fun show(param: AdsStubParam) {
 
     }
 }

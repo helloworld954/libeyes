@@ -62,8 +62,10 @@ dependencies {
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
 
     //firebase
-    implementation(platform("com.google.firebase:firebase-bom:32.2.0"))
+    api(platform("com.google.firebase:firebase-bom:32.2.0"))
     implementation("com.google.firebase:firebase-analytics-ktx")
+    api("com.google.firebase:firebase-crashlytics-ktx")
+    implementation("com.google.firebase:firebase-config-ktx")
 
     //rating bar
     implementation 'com.github.ome450901:SimpleRatingBar:1.5.1'

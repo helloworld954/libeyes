@@ -1,12 +1,16 @@
 package com.libeye.admob
 
 import android.content.Context
+import android.util.TypedValue
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.lib.eyes.formaldialogs.DialogFactory
+import com.lib.eyes.retrieveColorFromTheme
+import com.lib.eyes.utils.IndependenceDialog
 import com.lib.eyes.wireframe.AdsInterface
 import com.lib.eyes.wireframe.BaseAds
 import com.lib.eyes.wireframe.ISeparateShow
@@ -17,6 +21,7 @@ import com.lib.eyes.wireframe.ShowCallback
 import com.lib.eyes.wireframe.Timeout
 import com.libeye.admob.params.AdMobLoadParam
 import com.libeye.admob.params.AdMobShowParam
+import kotlinx.coroutines.delay
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -30,6 +35,7 @@ internal class AdmobInterstitialDelegate(override val adId: String) :
     private val fullScreenContentCallback by lazy {
         AdmobInterstitialCallback()
     }
+    private var showLoading: Boolean = true
 
     override suspend fun load(
         context: Context,
@@ -68,12 +74,27 @@ internal class AdmobInterstitialDelegate(override val adId: String) :
         return load(context, loadCallback)
     }
 
-    override fun show(param: AdMobShowParam.SPAdmobInterstitial) {
+    override suspend fun loadingBeforeShow(showLoading: Boolean): AdMobLoadParam.AdmobInterstitial.IAdmobInterstitial {
+        this.showLoading = showLoading
+        return this
+    }
+
+    override suspend fun show(param: AdMobShowParam.SPAdmobInterstitial) {
         val (activity, callback) = param
 
         if (isShowing || !isAvailable() || activity == null) {
             callback?.onFailed()
             return
+        }
+
+        if (showLoading) {
+            val dialog = DialogFactory.createLoadingDialog(
+                activity, activity.retrieveColorFromTheme(com.lib.eyes.R.attr.loadingDialogColor)
+            )
+
+            delay(1000)
+
+            dialog.dismiss()
         }
 
         this.callback = callback

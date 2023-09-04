@@ -18,6 +18,25 @@ import com.libeye.admob.templates.TemplateView
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        AdsPool.loadAndShowImmediately(
+            lp = AdMobLoadParam.AdmobOpenApp(BuildConfig.openApp_test, this),
+            sp = AdMobShowParam.SPAdmobOpenApp(
+                this, object: ShowCallback {
+                    override fun onSuccess() {
+                        initView()
+                    }
+
+                    override fun onFailed() {
+                        initView()
+                    }
+                }
+            ),
+            this
+        )
+    }
+
+    private fun initView() {
         setContentView(R.layout.activity_main)
 
         val stubCallback = object: ShowCallback {
@@ -52,7 +71,6 @@ class MainActivity : AppCompatActivity() {
                 nativeId = BuildConfig.native_test,
                 lifecycleOwner = ViewTreeLifecycleOwner.get(templateView)
             ),
-            fragmentActivityAndColor = null
         )
 
         // Banner Ads
@@ -65,7 +83,6 @@ class MainActivity : AppCompatActivity() {
                 loadCallback = stubLoadCallback
             ),
             lp = AdMobLoadParam.AdmobBanner,
-            fragmentActivityAndColor = null
         )
 
         // Inter load and show
@@ -80,7 +97,6 @@ class MainActivity : AppCompatActivity() {
                     interId = BuildConfig.inter_test,
                     interLoadCallback = stubLoadCallback
                 ),
-                fragmentActivityAndColor = this to null
             )
         }
 
@@ -91,7 +107,8 @@ class MainActivity : AppCompatActivity() {
                 loadParam = AdMobLoadParam.AdmobInterstitial(
                     context = this,
                     interId = BuildConfig.inter_test,
-                    interLoadCallback = stubLoadCallback
+                    interLoadCallback = stubLoadCallback,
+                    showLoading = false
                 )
             )
         }.also { it.invoke() }

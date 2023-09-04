@@ -88,7 +88,7 @@ internal class AdmobNativeDelegate(override val adId: String) :
     }
     override fun initSelf(): AdsInterface<AdMobShowParam.SPAdmobNative> = this
 
-    override fun show(param: AdMobShowParam.SPAdmobNative) {
+    override suspend fun show(param: AdMobShowParam.SPAdmobNative) {
         if (isAvailable() || adLoader == null || adLoader!!.isLoading) {
             param.showCallback?.onFailed()
             return

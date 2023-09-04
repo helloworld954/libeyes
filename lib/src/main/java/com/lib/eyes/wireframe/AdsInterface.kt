@@ -3,7 +3,7 @@ package com.lib.eyes.wireframe
 import com.lib.eyes.ShowParam
 
 interface AdsInterface<T: ShowParam> {
-    fun show(param: T)
+    suspend fun show(param: T)
     fun clearAds() {}
 }
 

@@ -5,5 +5,7 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.LibEyes" parent="Base.Theme.LibEyes" />
+    <style name="Theme.LibEyes" parent="Base.Theme.LibEyes">
+        <item name="loadingDialogColor">#578457</item>
+    </style>
 </resources>

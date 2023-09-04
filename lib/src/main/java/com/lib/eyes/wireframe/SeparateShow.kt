@@ -4,7 +4,7 @@ import com.lib.eyes.ShowParam
 
 interface ISeparateShow<T: ShowParam> {
     fun setSeparateTime(time: Int)
-    fun showSeparate(param: T)
+    suspend fun showSeparate(param: T)
 }
 
 class SeparateShow<T: ShowParam>(
@@ -13,7 +13,7 @@ class SeparateShow<T: ShowParam>(
 ): ISeparateShow<T> {
     private var time: Int = 0
 
-    override fun showSeparate(param: T) {
+    override suspend fun showSeparate(param: T) {
         if(this.time == separateTime) {
             this.time = 0
 

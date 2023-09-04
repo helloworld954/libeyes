@@ -1,6 +1,7 @@
 package com.libeye.admob.params
 
 import android.app.Activity
+import androidx.fragment.app.FragmentActivity
 import com.lib.eyes.ShowParam
 import com.lib.eyes.wireframe.LoadCallback
 import com.lib.eyes.wireframe.ShowCallback
@@ -15,7 +16,7 @@ sealed interface AdMobShowParam : ShowParam {
     ): AdMobShowParam
 
     data class SPAdmobInterstitial(
-        val activity: Activity?,
+        val activity: FragmentActivity?,
         override val showCallback: ShowCallback? = null
     ): AdMobShowParam
 

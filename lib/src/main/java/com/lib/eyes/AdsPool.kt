@@ -1,11 +1,9 @@
 package com.lib.eyes
 
-import android.content.Context
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import com.lib.eyes.configs.GlobalConfig
 import com.lib.eyes.formaldialogs.DialogFactory
-import com.lib.eyes.utils.IndependenceDialog
 import com.lib.eyes.wireframe.AdsInterface
 import com.lib.eyes.wireframe.AdsStub
 import com.lib.eyes.wireframe.ISeparateShow
@@ -27,7 +25,7 @@ object AdsPool : CoroutineScope {
     fun prepareAd(tag: String, loadParam: LoadParam) {
         if (GlobalConfig.data.enableAds) {
             launch {
-                pool[tag] = loadParam.apply { coroutineScope = this@launch }.createAd()
+                pool[tag] = loadParam.createAd()
             }
         } else {
             AdsStub()
@@ -39,8 +37,10 @@ object AdsPool : CoroutineScope {
      */
     fun show(tag: String, param: ShowParam) {
         if (GlobalConfig.data.enableAds) {
-            pool[tag]?.show(param) ?: kotlin.run {
-                param.showCallback?.onFailed()
+            launch {
+                pool[tag]?.show(param) ?: kotlin.run {
+                    param.showCallback?.onFailed()
+                }
             }
         } else {
             param.showCallback?.onFailed()
@@ -52,7 +52,9 @@ object AdsPool : CoroutineScope {
         if (GlobalConfig.data.enableAds) {
             pool[tag]?.let {
                 if(it is ISeparateShow<*>) {
-                    (it as ISeparateShow<ShowParam>).showSeparate(param)
+                    launch {
+                        (it as ISeparateShow<ShowParam>).showSeparate(param)
+                    }
                 }
             }
         } else {
@@ -64,16 +66,15 @@ object AdsPool : CoroutineScope {
      * This function is used for loading then show loaded ads without cache
      *
      * @param sp show-param is used for show ad [ShowParam]
-     * @param fragmentActivityAndColor is needed for showing dialog with [AdmobShowParam.SPAdmobInterstitial]
+     * @param fragmentActivity is needed for showing dialog with [AdmobShowParam.SPAdmobInterstitial]
      */
     fun loadAndShowImmediately(
         lp: LoadParam,
         sp: ShowParam,
-        fragmentActivityAndColor: Pair<FragmentActivity, Int?>? = null,
+        fragmentActivity: FragmentActivity? = null,
     ) {
         if (GlobalConfig.data.enableAds) {
             launch {
-                lp.coroutineScope = this
                 val paramCallback = lp.loadCallback
                 var dialog: DialogFragment? = null
 
@@ -89,10 +90,10 @@ object AdsPool : CoroutineScope {
                     }
                 }
 
-                if (lp.tag == LoadParam.TAG.INTER && fragmentActivityAndColor?.first != null) {
+                if (canShowLoading.contains(lp.tag) && fragmentActivity != null) {
                     dialog = DialogFactory.createLoadingDialog(
-                        fragmentActivityAndColor.first,
-                        fragmentActivityAndColor.second
+                        fragmentActivity,
+                        fragmentActivity.retrieveColorFromTheme(R.attr.loadingDialogColor)
                     )
                 }
 
@@ -105,5 +106,9 @@ object AdsPool : CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
+
+    private val canShowLoading = arrayOf(
+        LoadParam.TAG.INTER, LoadParam.TAG.OPEN_APP
+    )
 }
 

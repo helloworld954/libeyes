@@ -20,7 +20,6 @@ interface ShowParam {
 interface LoadParam {
     var loadCallback: LoadCallback?
     val tag: LoadParam.TAG
-    var coroutineScope: CoroutineScope?
 
     suspend fun <T: ShowParam> createAd(): AdsInterface<T>
 

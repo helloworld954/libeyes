@@ -21,6 +21,8 @@ fun AdsPool.registerOpenAppAd(application: BaseApplication, adId: String) {
 
 fun AdsPool.reload(context: Context, ad: AdsInterface<*>) {
     launch {
-        (ad as AdMobLoadParam.AdmobInterstitial.IAdmobInterstitial).reload(context)
+        if (ad is AdMobLoadParam.AdmobInterstitial.IAdmobInterstitial) {
+            ad.reload(context)
+        }
     }
 }
