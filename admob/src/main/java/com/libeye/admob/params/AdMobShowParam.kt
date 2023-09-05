@@ -11,21 +11,21 @@ sealed interface AdMobShowParam : ShowParam {
     data class SPAdmobBanner(
         val adView: BannerView,
         val adId: String,
-        override val showCallback: ShowCallback? = null,
+        override var showCallback: ShowCallback? = null,
         val loadCallback: LoadCallback? = null
     ): AdMobShowParam
 
     data class SPAdmobInterstitial(
         val activity: FragmentActivity?,
-        override val showCallback: ShowCallback? = null
+        override var showCallback: ShowCallback? = null
     ): AdMobShowParam
 
     data class SPAdmobNative(
-        override val showCallback: ShowCallback?
+        override var showCallback: ShowCallback?
     ): AdMobShowParam
 
     data class SPAdmobOpenApp(
         val activity: Activity,
-        override val showCallback: ShowCallback? = null
+        override var showCallback: ShowCallback? = null
     ): AdMobShowParam
 }

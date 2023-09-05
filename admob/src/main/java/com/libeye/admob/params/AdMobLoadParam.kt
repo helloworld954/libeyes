@@ -18,16 +18,11 @@ sealed class AdMobLoadParam : LoadParam {
     data class AdmobInterstitial(
         val context: Context,
         val interId: String,
-        var interLoadCallback: LoadCallback,
+        override var loadCallback: LoadCallback? = null,
         val timeout: Long? = null,
         val separateTime: Int? = null,
         val showLoading: Boolean = true
     ) : AdMobLoadParam() {
-        override var loadCallback: LoadCallback?
-            get() = interLoadCallback
-            set(value) {
-                interLoadCallback = value ?: interLoadCallback
-            }
         override val tag: LoadParam.TAG = LoadParam.TAG.INTER
 
         interface IAdmobInterstitial : AdsInterface<AdMobShowParam.SPAdmobInterstitial> {

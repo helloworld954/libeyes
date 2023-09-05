@@ -8,6 +8,7 @@ import com.lib.eyes.wireframe.AdsInterface
 import com.lib.eyes.wireframe.AdsStub
 import com.lib.eyes.wireframe.ISeparateShow
 import com.lib.eyes.wireframe.LoadCallback
+import com.lib.eyes.wireframe.ShowCallback
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -75,26 +76,24 @@ object AdsPool : CoroutineScope {
     ) {
         if (GlobalConfig.data.enableAds) {
             launch {
-                val paramCallback = lp.loadCallback
-                var dialog: DialogFragment? = null
-
-                lp.loadCallback = object : LoadCallback {
-                    override fun loadSuccess() {
-                        paramCallback?.loadSuccess()
-                        dialog?.dismiss()
-                    }
-
-                    override fun loadFailed() {
-                        paramCallback?.loadFailed()
-                        dialog?.dismiss()
-                    }
-                }
-
-                if (canShowLoading.contains(lp.tag) && fragmentActivity != null) {
-                    dialog = DialogFactory.createLoadingDialog(
+                val paramCallback = sp.showCallback
+                val dialog: DialogFragment? = if (canShowLoading.contains(lp.tag) && fragmentActivity != null) {
+                    DialogFactory.createLoadingDialog(
                         fragmentActivity,
                         fragmentActivity.retrieveColorFromTheme(R.attr.loadingDialogColor)
                     )
+                } else null
+
+                sp.showCallback = object : ShowCallback {
+                    override fun onSuccess() {
+                        paramCallback?.onSuccess()
+                        dialog?.dismiss()
+                    }
+
+                    override fun onFailed() {
+                        paramCallback?.onFailed()
+                        dialog?.dismiss()
+                    }
                 }
 
                 lp.createAd<ShowParam>().show(sp)

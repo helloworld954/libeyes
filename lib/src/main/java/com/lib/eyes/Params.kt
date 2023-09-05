@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
 interface ShowParam {
-    val showCallback: ShowCallback?
+    var showCallback: ShowCallback?
 }
 
 /**

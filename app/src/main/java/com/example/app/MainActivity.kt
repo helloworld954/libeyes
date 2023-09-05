@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity() {
                 lp = AdMobLoadParam.AdmobInterstitial(
                     context = this,
                     interId = BuildConfig.inter_test,
-                    interLoadCallback = stubLoadCallback
+                    loadCallback = stubLoadCallback
                 ),
             )
         }
@@ -107,7 +107,7 @@ class MainActivity : AppCompatActivity() {
                 loadParam = AdMobLoadParam.AdmobInterstitial(
                     context = this,
                     interId = BuildConfig.inter_test,
-                    interLoadCallback = stubLoadCallback,
+                    loadCallback = stubLoadCallback,
                     showLoading = false
                 )
             )
