@@ -94,6 +94,14 @@ object AdsPool : CoroutineScope {
                         paramCallback?.onFailed()
                         dialog?.dismiss()
                     }
+
+                    override fun onClicked() {
+                        paramCallback?.onClicked()
+                    }
+
+                    override fun onClosed(ad: AdsInterface<*>) {
+                        paramCallback?.onClosed(ad)
+                    }
                 }
 
                 lp.createAd<ShowParam>().show(sp)
