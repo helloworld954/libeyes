@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project version="8">
-  <component name="GradleMigrationSettings" migrationVersion="9" />
+<project version="9">
+  <component name="GradleMigrationSettings" migrationVersion="10" />
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
