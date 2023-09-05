@@ -72,7 +72,8 @@ object DialogFactory {
 
                             FirebaseLog.logEvent(
                                 "rating_${currentStar}_comment",
-                                dialogBinding.etComment.text()
+                                contentKey = "comment",
+                                content = dialogBinding.etComment.text()
                             )
                         }
                     }
