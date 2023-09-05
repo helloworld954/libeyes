@@ -108,7 +108,6 @@ class MainActivity : AppCompatActivity() {
                     context = this,
                     interId = BuildConfig.inter_test,
                     loadCallback = stubLoadCallback,
-                    showLoading = false
                 )
             )
         }.also { it.invoke() }
@@ -118,6 +117,7 @@ class MainActivity : AppCompatActivity() {
                 tag = "inter_main",
                 param = AdMobShowParam.SPAdmobInterstitial(
                     activity = this,
+                    showLoading = true,
                     showCallback = object: ShowCallback {
                         override fun onSuccess() {
 

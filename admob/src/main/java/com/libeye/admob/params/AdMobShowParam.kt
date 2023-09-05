@@ -17,6 +17,7 @@ sealed interface AdMobShowParam : ShowParam {
 
     data class SPAdmobInterstitial(
         val activity: FragmentActivity?,
+        val showLoading: Boolean = true,
         override var showCallback: ShowCallback? = null
     ): AdMobShowParam
 

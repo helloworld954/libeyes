@@ -21,7 +21,6 @@ sealed class AdMobLoadParam : LoadParam {
         override var loadCallback: LoadCallback? = null,
         val timeout: Long? = null,
         val separateTime: Int? = null,
-        val showLoading: Boolean = true
     ) : AdMobLoadParam() {
         override val tag: LoadParam.TAG = LoadParam.TAG.INTER
 
@@ -29,8 +28,6 @@ sealed class AdMobLoadParam : LoadParam {
             suspend fun load(context: Context, loadCallback: LoadCallback?): IAdmobInterstitial
 
             suspend fun reload(context: Context): IAdmobInterstitial
-
-            suspend fun loadingBeforeShow(showLoading: Boolean): IAdmobInterstitial
         }
 
         override suspend fun <T : ShowParam> createAd(): AdsInterface<T> =
@@ -40,7 +37,6 @@ sealed class AdMobLoadParam : LoadParam {
             ).let {
                 separateTime?.let { time -> it.setSeparateTime(time) }
                 it.load(context, loadCallback)
-                it.loadingBeforeShow(showLoading)
             } as AdsInterface<T>
     }
 
