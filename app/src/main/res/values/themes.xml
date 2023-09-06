@@ -6,6 +6,7 @@
     </style>
 
     <style name="Theme.LibEyes" parent="Base.Theme.LibEyes">
-        <item name="loadingDialogColor">#578457</item>
+        <item name="loadingDialogColor">#DE421F</item>
+        <item name="loadingDialogBackgroundColor">#66000000</item>
     </style>
 </resources>

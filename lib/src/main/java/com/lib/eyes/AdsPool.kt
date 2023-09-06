@@ -80,7 +80,8 @@ object AdsPool : CoroutineScope {
                 val dialog: DialogFragment? = if (canShowLoading.contains(lp.tag) && fragmentActivity != null) {
                     DialogFactory.createLoadingDialog(
                         fragmentActivity,
-                        fragmentActivity.retrieveColorFromTheme(R.attr.loadingDialogColor)
+                        fragmentActivity.retrieveColorFromTheme(R.attr.loadingDialogColor),
+                        fragmentActivity.retrieveColorFromTheme(R.attr.loadingDialogBackgroundColor),
                     )
                 } else null
 

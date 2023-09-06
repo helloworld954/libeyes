@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentActivity
 import com.lib.eyes.utils.PermissionRequest
 import com.lib.eyes.utils.PermissionRequestState
 
-private fun PermissionRequest.askNotificationPermission(
+fun PermissionRequest.askNotificationPermission(
     activity: FragmentActivity,
     callback: (PermissionRequestState) -> Unit
 ) {

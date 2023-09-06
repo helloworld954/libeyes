@@ -21,14 +21,22 @@ import com.lib.eyes.utils.IndependenceDialog
 object DialogFactory {
     fun createLoadingDialog(
         fragmentActivity: FragmentActivity,
-        @ColorInt color: Int? = null
+        @ColorInt color: Int? = null,
+        @ColorInt backgroundColor: Int? = null,
     ): DialogFragment {
         return IndependenceDialog.show(
             fragmentActivity, DialogLoadingBinding::inflate, false
         ) {
+            // Manually setting color instead of xml because of default value
             color?.let { c ->
-                it.root.indeterminateTintMode = PorterDuff.Mode.SRC_ATOP
-                it.root.indeterminateTintList = ColorStateList.valueOf(c)
+                it.progressBar.indeterminateTintMode = PorterDuff.Mode.SRC_ATOP
+                it.progressBar.indeterminateTintList = ColorStateList.valueOf(c)
+
+                it.tvLoadingAds.setTextColor(ColorStateList.valueOf(c))
+            }
+
+            backgroundColor?.let { c ->
+                it.background.backgroundTintList = ColorStateList.valueOf(c)
             }
         }
     }
@@ -58,6 +66,7 @@ object DialogFactory {
                         } else {
                             if (currentStar >= STAR_FOR_STORE) {
                                 fragmentActivity.openStore()
+                                dismiss()
                             } else {
                                 dialogBinding.tvMainLabel.setText(R.string.thank_for_submit)
                                 dialogBinding.btnSubmit.setText(R.string.done)
