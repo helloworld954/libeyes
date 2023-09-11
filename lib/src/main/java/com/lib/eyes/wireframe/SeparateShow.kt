@@ -18,7 +18,10 @@ class SeparateShow<T: ShowParam>(
             this.time = 0
 
             ads.show(param)
-        } else this.time++
+        } else {
+            this.time++
+            param.showCallback?.onFailed()
+        }
     }
 
     override fun setSeparateTime(time: Int) {
