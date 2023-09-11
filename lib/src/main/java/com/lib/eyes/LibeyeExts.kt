@@ -1,6 +1,5 @@
 package com.lib.eyes
 
-import android.app.Activity
 import android.content.Context
 import android.util.TypedValue
 import com.lib.eyes.configs.GlobalConfig

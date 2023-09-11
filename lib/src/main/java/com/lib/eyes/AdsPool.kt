@@ -48,13 +48,31 @@ object AdsPool : CoroutineScope {
         }
     }
 
+    /**
+     * Show ad only after period time
+     * @param atPosition: identify for same adId but different position
+     * @param onTime: time for show
+     */
     @Suppress("UNCHECKED_CAST")
-    fun showSeparate(tag: String, param: ShowParam) {
+    fun showSeparate(
+        tag: String, param: ShowParam,
+        atPosition: String? = null,
+        onTime: Int? = null,
+    ) {
         if (GlobalConfig.data.enableAds) {
-            pool[tag]?.let {
-                if(it is ISeparateShow<*>) {
+            pool[tag]?.let { ad ->
+                if(ad is ISeparateShow<*>) {
                     launch {
-                        (it as ISeparateShow<ShowParam>).showSeparate(param)
+                        val iShow = (ad as ISeparateShow<ShowParam>)
+                        if (atPosition == null) {
+                            iShow.showSeparate(param)
+                        } else {
+                            if (onTime == null) {
+                                iShow.showSeparate(param, atPosition)
+                            } else {
+                                iShow.showSeparate(param, atPosition, onTime)
+                            }
+                        }
                     }
                 }
             }
