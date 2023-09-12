@@ -74,11 +74,13 @@ object AdsPool : CoroutineScope {
                             }
                         }
                     }
+
+                    return
                 }
             }
-        } else {
-            param.showCallback?.onFailed()
         }
+
+        param.showCallback?.onFailed()
     }
 
     /**
